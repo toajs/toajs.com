@@ -1,0 +1,21 @@
+{
+  "ga": {
+    "destinations": [
+      "root@toajs.com:/zensh/toa/ga/"
+    ],
+    "nochdir": true,
+    "only": [
+      "favicon.ico",
+      "app.js",
+      "package.json",
+      "config**",
+      "controllers**",
+      "locales**",
+      "processes**",
+      "public/dist**",
+      "services**"
+    ],
+    "before": "NODE_ENV=build gulp build",
+    "after": "cd /zensh/toa/ga && npm install --production && pm2 restart toa-ga"
+  }
+}

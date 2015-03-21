@@ -15,8 +15,7 @@ require.config({
 require([
   'jquery',
   'thunks',
-  'global',
   'bootstrap'
-], function($, thunks, global) {
+], function($, thunks) {
 
 });

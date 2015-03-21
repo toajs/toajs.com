@@ -1,8 +1,8 @@
 {
-  "name": "spa",
+  "name": "toa-ga",
   "script": "./app.js",
   "exec_mode": "cluster_mode",
-  "instances": 1,
+  "instances": 2,
   "env": {
     "NODE_ENV": "build"
   }

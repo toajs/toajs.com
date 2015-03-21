@@ -1,24 +1,24 @@
 {
-  "name": "spa-seed",
-  "description": "Simple page application seed for teambition.",
+  "name": "toajs.com",
+  "description": "The toajs.com website.",
   "authors": [
     "Yan Qing <admin@zensh.com>"
   ],
-  "version": "0.3.0",
+  "version": "0.1.0",
   "main": "app.js",
   "repository": {
     "type": "git",
-    "url": "git@github.com:teambition/spa-seed.git"
+    "url": "git@github.com:toajs/toajs.com.git"
   },
   "engines": {
-    "node": ">=1.2.0"
+    "node": ">=1.5.0"
   },
-  "homepage": "https://github.com/teambition/spa-seed",
+  "homepage": "https://github.com/toajs/toajs.com",
   "keywords": [
     "toa",
     "spa",
     "seed",
-    "teambition"
+    "toajs"
   ],
   "dependencies": {
     "config": "~1.12.0",
@@ -31,9 +31,7 @@
     "toa-i18n": "^0.1.0",
     "toa-mejs": "^0.1.1",
     "toa-router": "~0.3.0",
-    "toa-static": "~0.3.2",
-    "toa-token": "~1.1.1",
-    "ua-parser-js": "~0.7.3"
+    "toa-static": "~0.3.2"
   },
   "devDependencies": {
     "gulp": "^3.8.11",

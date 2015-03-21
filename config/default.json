@@ -1,11 +1,6 @@
 {
-  "host": "http://localhost",
   "port": 3000,
   "cdnPrefix": "",
   "publicPath": "public",
-  "langs": ["zh", "en"],
-  "sessionName": "SID",
-  "sessionSecret": ["sessionSecretXX1", "sessionSecretXX2"],
-  "tokenSecret": ["tokenSecretXX1", "tokenSecretXX2"],
-  "cspHead": ""
+  "langs": ["zh", "en"]
 }

@@ -5,9 +5,6 @@ const Router = require('toa-router');
 const toaStatic = require('toa-static');
 const toaFavicon = require('toa-favicon');
 
-const infoAPI = require('../api/info');
-const userAPI = require('../api/user');
-
 const indexView = require('../controllers/getIndex');
 
 // 参考 https://github.com/toajs/toa-router
@@ -20,14 +17,13 @@ const faviconModule = toaFavicon(config.publicPath + '/static/img/favicon.ico');
 // 配置静态资源伺服模块
 // 参考 https://github.com/toajs/toa-static
 var staticModule = toaStatic({
-  root: config.publicPath,
-  prefix: '/static'
+  root: config.publicPath
 });
 
 // 配置静态资源路由和 views 路由
 router
   .get('', indexView)
-  .get('/static/(*)', function() {
+  .get('/static|bower/(*)', function() {
     return staticModule;
   })
   .get('/favicon.ico', function() {
@@ -38,12 +34,3 @@ router
       message: this.path + 'is not found!'
     });
   });
-
-// 配置 API 路由
-router
-  .get('/api/info', infoAPI.getInfo)
-  .post('/api/echo', infoAPI.echo);
-
-router.define('/api/auth')
-  .post(userAPI.getToken)
-  .put(userAPI.refreshToken);
