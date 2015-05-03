@@ -14,6 +14,11 @@ const tools = require('./services/tools');
 const router = require('./services/router');
 const packageInfo = require('./package.json');
 
+// var memwatch = require('memwatch');
+// memwatch.on('leak', function(info) {
+//   console.log(info);
+// });
+
 /**
  * 启动服务
  */

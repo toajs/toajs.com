@@ -4,15 +4,18 @@ var gulp = require('gulp');
 var config = require('config');
 var merge2 = require('merge2');
 var through = require('through2');
-var requirejs  = require('requirejs');
+var rjs = require('gulp-rjs2');
 var less = require('gulp-less');
 var gutil = require('gulp-util');
 var mocha = require('gulp-mocha');
 var clean = require('gulp-rimraf');
+var hljs = require('highlight.js');
+var rename = require('gulp-rename');
+var md = require('gulp-remarkable');
 var jshint = require('gulp-jshint');
 var uglify = require('gulp-uglify');
-var revall = require('gulp-rev-all');
-var sequence   = require('gulp-sequence');
+var Revall = require('gulp-rev-all');
+var sequence = require('gulp-sequence');
 var minifyCSS = require('gulp-minify-css');
 
 gulp.task('clean', function() {
@@ -63,6 +66,34 @@ gulp.task('views', function() {
   .pipe(gulp.dest('public/views'));
 });
 
+gulp.task('md', function() {
+  return gulp.src('public/src/docs/guide.md')
+    .pipe(md({
+      preset: 'full',
+      disable: ['replacements'],
+      remarkableOptions: {
+        typographer: true,
+        linkify: true,
+        breaks: true,
+        html: true
+      },
+      highlight: function (str, lang) {
+        if (lang && hljs.getLanguage(lang)) {
+          try {
+            return hljs.highlight(lang, str).value;
+          } catch (err) {}
+        }
+        try {
+          return hljs.highlightAuto(str).value;
+        } catch (err) {}
+
+        return ''; // use external default escaping
+      }
+    }))
+    .pipe(rename('guide.html'))
+    .pipe(gulp.dest('public/views/docs'));
+});
+
 gulp.task('bootstrap', function() {
   return gulp.src([
       'public/bower/bootstrap/dist/fonts/**',
@@ -74,42 +105,49 @@ gulp.task('bootstrap', function() {
 
 gulp.task('rjs-lib', function() {
   return rjs({
-      baseUrl: 'public/static/js',
-      mainConfigFile: 'public/static/js/main.js',
-      name: '../../bower/almond/almond',
-      out: 'js/lib.js',
-      include: ['libraries'],
-      insertRequire: ['libraries'],
-      removeCombined: true,
-      findNestedDependencies: true,
-      optimizeCss: 'none',
-      optimize: 'none',
-      skipDirOptimize: true,
-      wrap: false
-    })
-    .pipe(uglify())
-    .pipe(gulp.dest('public/static'));
+    baseUrl: 'public/static/js',
+    mainConfigFile: 'public/static/js/main.js',
+    name: '../../bower/almond/almond',
+    out: 'js/lib.js',
+    include: ['libraries'],
+    insertRequire: ['libraries'],
+    removeCombined: true,
+    findNestedDependencies: true,
+    optimizeCss: 'none',
+    optimize: 'none',
+    skipDirOptimize: true,
+    wrap: false
+  })
+  .pipe(uglify())
+  .pipe(gulp.dest('public/static'));
 });
 
 gulp.task('rjs-app', function() {
   return rjs({
-      baseUrl: 'public/static/js',
-      mainConfigFile: 'public/static/js/main.js',
-      name: 'main',
-      out: 'js/app.js',
-      exclude: ['libraries'],
-      removeCombined: true,
-      findNestedDependencies: true,
-      optimizeCss: 'none',
-      optimize: 'none',
-      skipDirOptimize: true,
-      wrap: true
-    })
-    .pipe(uglify())
-    .pipe(gulp.dest('public/static'));
+    baseUrl: 'public/static/js',
+    mainConfigFile: 'public/static/js/main.js',
+    name: 'main',
+    out: 'js/app.js',
+    exclude: ['libraries'],
+    removeCombined: true,
+    findNestedDependencies: true,
+    optimizeCss: 'none',
+    optimize: 'none',
+    skipDirOptimize: true,
+    wrap: true
+  })
+  .pipe(uglify())
+  .pipe(gulp.dest('public/static'));
 });
 
 gulp.task('rev', function() {
+  var revall = new Revall({
+    prefix: config.cdnPrefix,
+    dontGlobal: [/\/favicon\.ico$/],
+    dontRenameFile: [/\.html$/],
+    dontUpdateReference: [/\.html$/]
+  });
+
   return merge2(
       gulp.src('public/views/**/*.html', {base: 'public'}),
       gulp.src('public/static/css/*.css', {base: 'public'}).pipe(minifyCSS()),
@@ -122,11 +160,7 @@ gulp.task('rev', function() {
         'public/static/fonts/**',
       ], {base: 'public'})
     )
-    .pipe(revall({
-      quiet: true,
-      prefix: config.cdnPrefix,
-      ignore: ['.html', 'favicon.ico']
-    }))
+    .pipe(revall.revision())
     .pipe(gulp.dest('public/dist'));
 });
 
@@ -138,27 +172,6 @@ gulp.task('watch', function() {
 });
 
 gulp.task('test', sequence('jshint', 'mocha'));
-gulp.task('dev', sequence('clean', ['js', 'less', 'img', 'views', 'bootstrap']));
+gulp.task('dev', sequence('clean', ['js', 'less', 'img', 'views', 'md', 'bootstrap']));
 gulp.task('build', sequence('dev', ['rjs-lib', 'rjs-app'], 'rev'));
 gulp.task('default', sequence('dev'));
-
-function rjs(options) {
-  var stream = through.obj();
-  var path = options.out;
-
-  options.out = function(string) {
-    stream.push(new gutil.File({
-      path: path,
-      contents: new Buffer(string)
-    }));
-  };
-
-  requirejs.optimize(options, function(data) {
-    stream.push(null);
-  }, function(err) {
-    console.error(err);
-    stream.emit('error', err);
-  });
-
-  return stream;
-}
