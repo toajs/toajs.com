@@ -1,0 +1,50 @@
+.loading-card {
+  background: @white-dark;
+
+  .loading-indicator {
+    margin: 0 auto !important;
+  }
+}
+
+// Loading card in view
+[class*="view"] {
+  .loading-card-wrap {
+    .object-running();
+    height: 100%;
+
+    .card {
+      box-shadow: none;
+    }
+  }
+
+  .loading-card {
+    .square(100%);
+
+    @media (max-width: @screen-xs-max) {
+      &:after {
+        content: '\00a0';
+        display: block;
+        .square(100%);
+      }
+
+      .loading-indicator {
+        position: absolute;
+        left: 50%;
+        margin-left: -50px !important;
+        line-height: 350px;
+      }
+    }
+
+    > * {
+      margin: 0 auto !important;
+    }
+  }
+}
+
+.loading-indicator {
+  width: 100px;
+
+  .loader-dot {
+    margin: 0 3px;
+  }
+}

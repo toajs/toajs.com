@@ -1,0 +1,11 @@
+.object-running(@level: 1) {
+  position: absolute;
+  z-index: @level;
+  left: 0;
+  width: 100%;
+}
+
+.object-layer-running(@level: 1) {
+  .object-running(@level);
+  padding: 0 @gutter-base;
+}

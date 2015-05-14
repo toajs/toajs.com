@@ -1,0 +1,65 @@
+/**
+* Colors variables
+*/
+
+/* ==== Base ==== */
+
+// Material design colors(Saturation 500)
+@red:          #D0021B; // Replace #E51C23
+@pink:         #FF4081;
+@purple:       #AB47BC;
+@purple-deep:  #673AB7;
+@yellow:       #FFEB3B;
+@amber:        #FFC107;
+@lime:         #CDDC39;
+@orange:       #FF9800;
+@orange-deep:  #FF5722;
+@green-light:  #8BC34A;
+@green:        #259B24;
+@brown:        #795548;
+@indigo:       #3f51b5;
+@blue:         #03A9F4; // Replace light blue
+@cyan:         #4EDDBD;
+@teal:         #009688;
+
+// The gray colors use luminance what replace saturation to mark
+@black:        #000000;
+@black-dark:   fadeout(@black, 13%); // rgba(0, 0, 0, 0.87)
+@black-light:  fadeout(@black, 46%); // rgba(0, 0, 0, 0.54)
+@black-min:    fadeout(@black, 74%); // rgba(0, 0, 0, 0.26)
+@black-faint:  fadeout(@black, 88%); // rgba(0, 0, 0, 0.12)
+
+@gray-22:      lighten(@black, 22%); // #383838 grayDarker
+@gray-43:      lighten(@black, 43%); // #6E6E6E
+@gray-50:      lighten(@black, 50%); // #808080 grayDark
+@gray-58:      lighten(@black, 58%); // #959595
+@gray-61:      lighten(@black, 61%); // #9B9B9B
+@gray-65:      lighten(@black, 65%); // #A6A6A6 gray
+@gray-67:      lighten(@black, 67%); // #AAAAAA
+@gray-74:      lighten(@black, 74%); // #BDBDBD
+@gray-76:      lighten(@black, 76%); // #C1C1C1
+@gray-82:      lighten(@black, 82%); // #D0D0D0
+@gray-85:      lighten(@black, 85%); // #D9D9D9 grayLight
+@gray-91:      lighten(@black, 91%); // #E7E7E7
+@gray-93:      lighten(@black, 93%); // #EEEEEE grayLighter
+@gray-96:      lighten(@black, 96%); // #F2F2F2
+
+@gray-darker:  @gray-22;             // #383838
+@gray-dark:    @gray-50;             // #808080
+@gray:         @gray-65;             // #A6A6A6
+@gray-light:   @gray-85;             // #D9D9D9
+@gray-lighter: @gray-93;             // #EEEEEE
+
+@white:        #FFFFFF;
+@white-dark:   fadeout(@white, 13%);  // rgba(255, 255, 255, 0.87)
+@white-light:  fadeout(@white, 46%);  // rgba(255, 255, 255, 0.54)
+
+/* ==== Instances ==== */
+
+// Brand
+@brand-primary:  @indigo;
+@brand-second:   @lime;
+@brand-success:  @green;
+@brand-info:     @blue;
+@brand-warning:  @orange;
+@brand-danger:   @red;

@@ -1,0 +1,74 @@
+// Layout spaceing gutter
+.container,
+[class*=col-] {
+  padding-left: @gutter-base;
+  padding-right: @gutter-base;
+}
+
+.row {
+  margin-right: -@gutter-base;
+  margin-left: -@gutter-base;
+}
+
+// Multi sections spaceing gutter
+.gutter-bottom {
+  margin-bottom: @space-base;
+
+  @media (max-width: @screen-xs-max) {
+    margin-bottom: @space-base/2;
+  }
+}
+
+// Responsive margin
+.margin-resp {
+  margin: @space-sm;
+
+  @media (min-width: @screen-sm) {
+    margin: @space-base;
+  }
+}
+
+.margin-resp-bottom {
+  margin-bottom: @space-sm;
+
+  @media (min-width: @screen-sm) {
+    margin-bottom: @space-base;
+  }
+}
+
+// Responsive padding
+.padding-resp {
+  padding: @space-sm;
+
+  @media (min-width: @screen-sm) {
+    padding: @space-base;
+  }
+}
+
+.padding-resp-sm {
+  padding: 0 @space-sm;
+  padding-top: @space-sm !important;
+  padding-bottom: @space-sm !important;
+
+  @media (min-width: @screen-sm) {
+    padding: @space-base;
+  }
+}
+
+.padding-resp-bottom {
+  padding-bottom: @space-sm;
+
+  @media (min-width: @screen-sm) {
+    padding-bottom: @space-base;
+  }
+}
+
+// Utils
+.no-padding {
+  padding: 0 !important;
+}
+
+.no-padding-x {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}

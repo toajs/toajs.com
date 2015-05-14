@@ -1,0 +1,89 @@
+.card {
+  background: @white;
+  .gutter-bottom();
+
+  *:not(:first-child):last-child {
+    @media (max-width: @screen-xs-max) {
+      margin-bottom: 0 !important;
+    }
+  }
+
+  > * {
+    margin-left: 0 !important;
+
+    &.with-border {
+      box-shadow: @shadow-b2;
+    }
+  }
+
+  .card-header {
+    line-height: @height-base;
+    font-size: @size-base;
+    border-bottom: none;
+    .padding-resp();
+    @media (min-width: 0) {
+      padding-bottom: 0;
+    }
+
+    &.with-border {
+      .padding-resp-bottom();
+    }
+
+    .card-title {
+      .bold();
+
+      &.with-handler {
+        .text-overflow();
+      }
+    }
+
+    .handler {
+      float: right;
+      margin-left: @gutter-base;
+      font-size: 20px;
+
+      .icon {
+        float: left;
+        .iutil-adjust();
+      }
+    }
+
+    > *:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .card-footer {
+    .padding-resp-sm();
+  }
+
+  .card-tip {
+    .muted();
+  }
+
+  .card-help {
+    .muted();
+
+    .icon {
+      float: left;
+      margin-right: @gutter-base;
+      font-size: 20px;
+      color: @gray-67;
+      .iutil-adjust();
+    }
+  }
+
+  // A card could have multi content wraps
+  .card-content {
+    .padding-resp();
+  }
+}
+
+// Hack for Special Language
+[lang="zh"] {
+  @media (min-width: @screen-sm) {
+    .card-header {
+      line-height: 1 !important;
+    }
+  }
+}

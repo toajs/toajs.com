@@ -11,12 +11,21 @@ var mocha = require('gulp-mocha');
 var clean = require('gulp-rimraf');
 var hljs = require('highlight.js');
 var rename = require('gulp-rename');
+var nodemon = require('gulp-nodemon');
 var md = require('gulp-remarkable');
 var jshint = require('gulp-jshint');
 var uglify = require('gulp-uglify');
 var Revall = require('gulp-rev-all');
+var plumber = require('gulp-plumber');
 var sequence = require('gulp-sequence');
 var minifyCSS = require('gulp-minify-css');
+var livereload = require('gulp-livereload');
+var autoprefixer = require('gulp-autoprefixer');
+
+var echoErrorAndEnd = function(err) {
+  console.log(err);
+  return this.emit('end');
+};
 
 gulp.task('clean', function() {
   return gulp.src([
@@ -47,13 +56,19 @@ gulp.task('mocha', function() {
 
 gulp.task('less', function() {
   return gulp.src('public/src/less/app.less')
-    .pipe(less())
-    .pipe(gulp.dest('public/static/css'));
+    .pipe(plumber())
+    .pipe(less().on('error', echoErrorAndEnd))
+    .pipe(autoprefixer('last 2 versions', {
+      map: false
+    }))
+    .pipe(gulp.dest('public/static/css'))
+    .pipe(livereload());
 });
 
 gulp.task('js', function() {
   return gulp.src('public/src/js/**/*.js')
-    .pipe(gulp.dest('public/static/js'));
+    .pipe(gulp.dest('public/static/js'))
+    .pipe(livereload());
 });
 
 gulp.task('img', function() {
@@ -165,6 +180,7 @@ gulp.task('rev', function() {
 });
 
 gulp.task('watch', function() {
+  livereload.listen();
   gulp.watch('public/src/js/**/*.js', ['js']);
   gulp.watch('public/src/views/**/*.html', ['views']);
   gulp.watch('public/src/less/**/*.less', ['less']);
@@ -172,6 +188,25 @@ gulp.task('watch', function() {
 });
 
 gulp.task('test', sequence('jshint', 'mocha'));
+
 gulp.task('dev', sequence('clean', ['js', 'less', 'img', 'views', 'md', 'bootstrap']));
+
 gulp.task('build', sequence('dev', ['rjs-lib', 'rjs-app'], 'rev'));
+
 gulp.task('default', sequence('dev'));
+
+gulp.task('serv', ['watch'], function() {
+  return nodemon({
+    script: 'app.js',
+    watch: ['public/views','locales'],
+    ext: 'js json html'
+  }).on('restart', function() {
+    var now;
+    now = new Date();
+    console.log("[" + (now.toLocaleTimeString()) + "] [nodemon] Server restarted!");
+    // Auto refresh index after restart server.
+    setTimeout(function(){
+      livereload.reload();
+    }, 800);
+  });
+});

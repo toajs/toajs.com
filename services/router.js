@@ -14,10 +14,13 @@ const router = module.exports = new Router();
 // 参考 https://github.com/toajs/toa-favicon
 const faviconModule = toaFavicon(config.publicPath + '/static/img/favicon.ico');
 
+const isDevelopment = process.env.NODE_ENV === 'development';
+
 // 配置静态资源伺服模块
 // 参考 https://github.com/toajs/toa-static
 var staticModule = toaStatic({
-  root: config.publicPath
+  root: config.publicPath,
+  maxCacheLength: isDevelopment ? -1 : 0
 });
 
 // 配置静态资源路由和 views 路由

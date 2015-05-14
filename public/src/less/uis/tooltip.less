@@ -1,0 +1,182 @@
+/**
+* Params:
+  - Size is the with of the arrow
+  - Color is the color of the arrow (plain color required)
+  - Direction is the orientation of the arrow (top, right, bottom, left)
+  - Offset is the position of the arrow on its axis (px / em)
+  - Border-size is the width of the border if there is one (optional; default "0")
+  - Border-color is the color of the border if there is one (optional; default "inherit");
+* Example:
+  .box {
+   .arrow(10px, @white, bottom, 50%, 1px, darken(@white, 10%));
+  }
+*/
+
+.arrow(@size, @color, @direction, @offset, @border-size: 0, @border-color: inherit) {
+  position: relative;
+  &:after,
+  &:before {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+  }
+}
+
+.arrow(@size, @color, @direction, @offset, @border-size: 0, @border-color: inherit) when (@direction = top) {
+  @m-size: @size + @border-size;
+
+  &:after {
+    bottom: 100%;
+    left: @offset;
+    margin-left: -@size;
+
+    border-left: @size solid transparent;
+    border-right: @size solid transparent;
+    border-bottom: @size solid @color;
+  }
+
+  &:before {
+    bottom: 100%;
+    left: @offset;
+    margin-left: -@m-size;
+
+    border-left: @m-size solid transparent;
+    border-right: @m-size solid transparent;
+    border-bottom: @m-size solid;
+    border-bottom-color: @border-color;
+  }
+}
+
+.arrow(@size, @color, @direction, @offset, @border-size: 0, @border-color: inherit) when (@direction = bottom) {
+  @m-size: @size + @border-size;
+
+  &:after {
+    top: 100%;
+    left: @offset;
+    margin-left: -@size;
+
+    border-left: @size solid transparent;
+    border-right: @size solid transparent;
+    border-top: @size solid @color;
+  }
+
+  &:before {
+    top: 100%;
+    left: @offset;
+    margin-left: -@m-size;
+    border-left: @m-size solid transparent;
+    border-right: @m-size solid transparent;
+    border-top: @m-size solid;
+    border-top-color: @border-color;
+  }
+}
+
+.arrow(@size, @color, @direction, @offset, @border-size: 0, @border-color: inherit) when (@direction = right) {
+  @m-size: @size + @border-size;
+
+  &:after {
+    left: 100%;
+    top: @offset;
+    margin-top: -@size;
+
+    border-top: @size solid transparent;
+    border-bottom: @size solid transparent;
+    border-left: @size solid @color;
+  }
+  &:before {
+    left: 100%;
+    top: @offset;
+    margin-top: -@m-size;
+
+    border-top: @m-size solid transparent;
+    border-bottom: @m-size solid transparent;
+    border-left: @m-size solid;
+    border-left-color: @border-color;
+  }
+}
+
+.arrow(@size, @color, @direction, @offset, @border-size: 0, @border-color: inherit) when (@direction = left) {
+  @m-size: @size + @border-size;
+
+  &:after {
+    right: 100%;
+    top: @offset;
+    margin-top: -@size;
+
+    border-top: @size solid transparent;
+    border-bottom: @size solid transparent;
+    border-right: @size solid @color;
+  }
+  &:before {
+    right: 100%;
+    top: @offset;
+    margin-top: -@m-size;
+
+    border-top: @m-size solid transparent;
+    border-bottom: @m-size solid transparent;
+    border-right: @m-size solid;
+    border-right-color: @border-color;
+  }
+}
+
+/* ====  Tooltip UI component ==== */
+.tooltip {
+  @bg: fadeout(@gray-96, 8%);
+  @arrow-width: 6px;
+
+  &.in {
+    opacity: 1;
+  }
+
+  &.top    { margin-top:  -4px;}
+  &.right  { margin-left:  8px;}
+  &.bottom { margin-top:   4px;}
+  &.left   { margin-left: -8px;}
+
+  .tooltip-inner {
+    padding: 7px 15px;
+    font-size: @size-base;
+    line-height: @height-base;
+    min-width: 120px;
+    background: @bg;
+    color: #555555;
+    border-radius: 5px;
+    word-wrap: break-word;
+    box-shadow: 0 0 2px 0 @black-min;
+  }
+
+  .tooltip-arrow {
+    display: none;
+  }
+
+  &.top .tooltip-inner {
+   .arrow(8px, @bg, bottom, 50%, 2px, darken(@bg, 10%));
+    box-shadow: 0 1px 2px 0 @black-min;
+  }
+
+  &.bottom .tooltip-inner {
+   .arrow(8px, @bg, top, 50%, 2px, darken(@bg, 10%));
+    box-shadow: 0 -1px 2px 0 @black-min;
+  }
+
+  &.left .tooltip-inner {
+   .arrow(8px, @bg, right, 50%, 2px, darken(@bg, 10%));
+    box-shadow: 1px 0 2px 0 @black-min;
+  }
+
+  &.right .tooltip-inner {
+   .arrow(8px, @bg, left, 50%, 2px, darken(@bg, 10%));
+    box-shadow: -1px 0 2px 0 @black-min;
+  }
+}
+
+.btn + .tooltip.top    { margin-top:  -8px;}
+.btn + .tooltip.bottom { margin-top:   8px;}
+
+// Hide in small screen
+@media (max-width: @screen-xs-max) {
+  .tooltip {
+    display: none !important;
+  }
+}

@@ -1,0 +1,60 @@
+// Layout size
+html,
+body {
+  height: 100%;
+  min-width: @width-min;
+}
+
+body {
+  overflow: scroll;
+  background: @gray-lighter;
+}
+
+.site-main {
+  min-height: 50%;
+  @media (min-width: @screen-sm) {
+    padding-bottom: @space-base;
+  }
+}
+
+.main-content {
+  position: relative;
+}
+
+// Layout width
+.container {
+  max-width: @width-container;
+
+  @media (min-width: @screen-sm)
+  and (max-width: @screen-sm-max) {
+    width: 100%;
+    padding-left: @space-base;
+    padding-right: @space-base;
+  }
+}
+
+@media (min-width: @screen-sm) {
+  .container {
+    width: 100%;
+  }
+
+  .col-sm-2 {
+    width: 18%;
+  }
+
+  .col-sm-10 {
+    width: 82%;
+  }
+}
+
+.col-md-4 {
+  @media (min-width: @screen-md) {
+    width: @width-sidebar;
+  }
+}
+
+.col-md-8 {
+  @media (min-width: @screen-md) {
+    width: @width-main;
+  }
+}

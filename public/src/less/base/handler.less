@@ -1,0 +1,39 @@
+// Handler base
+a,
+.handler {
+  cursor: pointer;
+}
+
+// Add link transition
+a {
+  color: @brand-primary;
+  transition: color 218ms ease-in-out, background 218ms ease-in-out;
+
+  &:hover {
+    color: lighten(@brand-primary, 10%);
+  }
+
+  &.block {
+    display: block;
+  }
+}
+
+// Add transiton to hover elements
+[class*="hover-"] {
+  transition: all 218ms ease-in-out !important;
+}
+
+// Hover change color to brand primary
+.hover-primary:hover {
+  color: @brand-primary !important;
+}
+
+// Hover opacity
+.hover-opacity:hover {
+  opacity: 0.85;
+}
+
+// Hover opacity
+.hover-shadow:hover {
+  box-shadow: @shadow-z1h;
+}
