@@ -1,0 +1,613 @@
+<h2 id="doc-application">Application</h2>
+<p>一个 Toa Application（以下简称 <strong>app</strong>）由一系列 <strong>中间件</strong> 和 <strong>模块</strong> 组成。<strong>中间件</strong> 是指通过 <code>app.use</code> 加载的 thunk 函数或 generator 函数。<strong>模块</strong> 特指在实例化 Toa 时的 <code>appBody</code> 中的功能组件。</p>
+<p>这些功能组件可能是同步或异步的函数，它们的运行参数可以完全由应用开发者控制，它们对应用的访问权限可以变得极小。<br>
+这里与 Koa 的强调中间件概念有较大区别：中间件总能访问到 <code>context</code> 对象，而 Koa 的 <code>context</code> 又包含了 <code>app</code> 自身的引用。也就是说中间件能访问应用的一切资源。</p>
+<p>对于 web server 的一次访问请求，app 会按照顺序先运行中间件，然后再运行 <code>appBody</code> 中的模块组，最后运行内置的 <code>respond</code> 函数，将请求结果自动响应的客户端。由于 Toa 没有 <code>级联（Cascading）</code>，这些中间件或模块的运行不会有任何交叉，它们总是先运行完一个，再运行下一个。</p>
+<p>Toa 只有一个极简的内核，提供快捷的 HTTP 操作和异步流程控制能力。具体的业务功能逻辑则由中间件和模块组合实现。<br>
+用户则可根据自己的业务需求，以最轻量级的方式组合自己的应用。</p>
+<h3>Class: Toa([server][, appBody][, options])</h3>
+<ul>
+<li><code>server</code>: {Object}, 可以是 http server 或 https server。</li>
+<li><code>appBody</code>: {Function} 有唯一参数 <code>thunk</code> 生成器，它的作用域已与当前的 request 请求绑定，它的 <code>onerror</code> 能捕获任何异常。<code>appBody</code> 中如果有异步逻辑，则应该封装在 <code>thunk</code> 生成器能处理的对象（thunkable），如 <code>generator</code> 函数、<code>generator</code> 对象或<code>promise</code> 对象等，并 <code>return</code> 返回（与 <code>thunks</code> 或 <code>Promise</code> 类似）。</li>
+<li><code>options</code>: {Object} 同 <code>thunks</code> 的 options，可以定义 <code>appBody</code> 中 <code>thunk</code> 作用域的 <code>debug</code> 方法和 <code>onerror</code> 方法。其中 <code>onerror</code> 方法可用于对捕获异常进行初步加工处理，再 <code>return</code> 或 <code>throw</code> 给 Toa 内置的 <code>onResError</code> 处理。如果 <code>onerror</code> 返回 <code>true</code>，则忽略该异常，继续执行后续业务逻辑。</li>
+</ul>
+<pre><code class="language-js"><span class="hljs-comment">// with full arguments</span>
+<span class="hljs-keyword">var</span> app = <span class="hljs-keyword">new</span> Toa(server, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(thunk)</span> </span>{
+  <span class="hljs-comment">// body...</span>
+}, {
+  debug: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{}
+  onerror: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(error)</span> </span>{}
+});
+</code></pre>
+<h4>app.keys = ['key1’, ‘key2’]</h4>
+<p>设置 cookie 签名密钥，参考 <a href="https://github.com/expressjs/keygrip">Keygrip</a>。<br>
+注意，签名密钥只在配置项 <code>signed</code> 参数为真时才会生效：</p>
+<pre><code class="language-javascript"><span class="hljs-keyword">this</span>.cookies.set(<span class="hljs-string">'name'</span>, <span class="hljs-string">'test'</span>, {signed: <span class="hljs-literal">true</span>});
+</code></pre>
+<h4>app.config = config</h4>
+<p>config 会被 <code>context.config</code> 继承，但 <code>context.config</code> 不会修改 <code>app.config</code>。</p>
+<pre><code class="language-js">app.config = config;
+</code></pre>
+<p>app.config 默认值：</p>
+<pre><code class="language-js">{
+  proxy: <span class="hljs-literal">false</span>, <span class="hljs-comment">// 决定了哪些 `proxy header` 参数会被加到信任列表中</span>
+  env: process.env.NODE_ENV || <span class="hljs-string">'development'</span>, <span class="hljs-comment">// node 执行环境</span>
+  subdomainOffset: <span class="hljs-number">2</span>,
+  poweredBy: <span class="hljs-string">'Toa'</span>
+}
+</code></pre>
+<h4>app.use(function(callback) {})</h4>
+<h4>app.use(function*() {})</h4>
+<p>加载中间件，返回 <code>app</code>，<code>fn</code> 必须是 <code>thunk</code> 函数或 <code>generator</code> 函数，函数中的 <code>this</code> 值为 <code>context</code>。</p>
+<pre><div class="row code-compare"><div class="col-sm-6">
+<code class="language-js">app.use(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(callback)</span> </span>{
+  <span class="hljs-comment">// task</span>
+  <span class="hljs-comment">// this === context</span>
+  callback(err, result);
+})
+</code>
+</div><div class="col-sm-6">
+<code class="language-js">app.use(<span class="hljs-function"><span class="hljs-keyword">function</span>* <span class="hljs-params">()</span> </span>{
+  <span class="hljs-comment">// task</span>
+  <span class="hljs-comment">// this === context</span>
+  <span class="hljs-keyword">yield</span> result;
+})
+</code>
+</div>
+</div>
+</pre>
+<h4>app.onerror = function(error) {}</h4>
+<p>设置 <code>onerror</code> 函数，当 app 捕捉到程序运行期间的错误时，会先使用 <code>options.onerror</code>（若提供）处理，再使用内置的 <code>onResError</code> 函数处理响应给客户端，最后抛出给 <code>app.onerror</code> 处理，应用通常可以在这里判断错误类型，根据情况将错误写入日志系统。</p>
+<pre><code class="language-js"><span class="hljs-comment">// default</span>
+app.onerror = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(err)</span> </span>{
+  <span class="hljs-comment">// ignore null and response error</span>
+  <span class="hljs-keyword">if</span> (err == <span class="hljs-literal">null</span> || (err.status &amp;&amp; err.status &lt; <span class="hljs-number">500</span>)) <span class="hljs-keyword">return</span>;
+  <span class="hljs-keyword">if</span> (!util.isError(err)) err = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'non-error thrown: '</span> + err);
+
+  <span class="hljs-comment">// catch system error</span>
+  <span class="hljs-keyword">var</span> msg = err.stack || err.toString();
+  <span class="hljs-built_in">console</span>.error(msg.replace(<span class="hljs-regexp">/^/gm</span>, <span class="hljs-string">'  '</span>));
+};
+</code></pre>
+<h4>app.onmessage = function(message) {}</h4>
+<p>设置 <code>onmessage</code> 函数，该函数接受 <code>process</code> 的 <code>message</code> 通知，主要目的是用来处理 <code>pm2 gracefulReload</code>，也可以自己定义其行为。</p>
+<pre><code class="language-js"><span class="hljs-comment">// default</span>
+app.onmessage = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(msg)</span> </span>{
+  <span class="hljs-keyword">if</span> (msg === <span class="hljs-string">'shutdown'</span>) {
+    <span class="hljs-keyword">this</span>.server.close(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+      process.exit(<span class="hljs-number">0</span>);
+    });
+  }
+};
+</code></pre>
+<h4>app.listen(port, [hostname], [backlog], [callback])</h4>
+<h4>app.listen(path, [callback])</h4>
+<h4>app.listen(handle, [callback])</h4>
+<p>返回 <code>server</code>，用法与 <code>httpServer.listen</code> 一致。</p>
+<pre><code class="language-js"><span class="hljs-comment">// 与 httpServer.listen 一致</span>
+app.listen(<span class="hljs-number">3000</span>);
+</code></pre>
+<h2 id="doc-context">Context</h2>
+<h3>Similar to <a href="https://github.com/koajs/koa/blob/master/docs/api/context.md">Koa’s Context</a></h3>
+<h3>Difference from Koa:</h3>
+<ul>
+<li>remove <code>ctx.app</code></li>
+<li>remove <code>ctx.onerror</code></li>
+<li>add <code>ctx.catchStream</code></li>
+<li>is a <code>EventEmitter</code> instance</li>
+</ul>
+<p><code>Context</code> object encapsulates node’s <code>request</code> and <code>response</code> objects into a single object which provides many helpful methods for writing web applications and APIs. These operations are used so frequently in HTTP server development that they are added at this level instead of a higher level framework, which would force middleware to re-implement this common functionality.</p>
+<p>A <code>Context</code> is created <em>per</em> request, and is referenced in middleware as the receiver, or the <code>this</code> identifier, as shown in the following snippet:</p>
+<pre><code class="language-js"><span class="hljs-keyword">var</span> app = Toa(<span class="hljs-function"><span class="hljs-keyword">function</span>*<span class="hljs-params">()</span> </span>{
+  <span class="hljs-keyword">this</span>; <span class="hljs-comment">// is the Context</span>
+  <span class="hljs-keyword">this</span>.request; <span class="hljs-comment">// is a toa Request</span>
+  <span class="hljs-keyword">this</span>.response; <span class="hljs-comment">// is a toa Response</span>
+});
+
+app.use(<span class="hljs-function"><span class="hljs-keyword">function</span>*<span class="hljs-params">()</span> </span>{
+  <span class="hljs-keyword">this</span>; <span class="hljs-comment">// is the Context</span>
+  <span class="hljs-keyword">this</span>.request; <span class="hljs-comment">// is a toa Request</span>
+  <span class="hljs-keyword">this</span>.response; <span class="hljs-comment">// is a toa Response</span>
+});
+</code></pre>
+<p>Many of the context’s accessors and methods simply delegate to their <code>ctx.request</code> or <code>ctx.response</code> equivalents for convenience, and are otherwise identical. For example <code>ctx.type</code> and <code>ctx.length</code> delegate to the <code>response</code> object, and <code>ctx.path</code> and <code>ctx.method</code> delegate to the <code>request</code>.</p>
+<h4>ctx.req</h4>
+<p>Node’s <code>request</code> object.</p>
+<h4>ctx.res</h4>
+<p>Node’s <code>response</code> object.</p>
+<p>Bypassing Toa’s response handling is <strong>not supported</strong>. Avoid using the following node properties:</p>
+<ul>
+<li><code>res.statusCode</code></li>
+<li><code>res.writeHead()</code></li>
+<li><code>res.write()</code></li>
+<li><code>res.end()</code></li>
+</ul>
+<h4>ctx.request</h4>
+<p>A Toa <code>Request</code> object.</p>
+<h4>ctx.response</h4>
+<p>A Toa <code>Response</code> object.</p>
+<h4>ctx.state</h4>
+<p>The recommended namespace for passing information through middleware and to your frontend views.</p>
+<pre><code class="language-js"><span class="hljs-keyword">this</span>.state.user = <span class="hljs-keyword">yield</span> User.find(id);
+</code></pre>
+<h4>ctx.cookies.get(name, [options])</h4>
+<p>Get cookie <code>name</code> with <code>options</code>:</p>
+<ul>
+<li><code>signed</code> the cookie requested should be signed</li>
+</ul>
+<p>Toa uses the <a href="https://github.com/jed/cookies">cookies</a> module where options are simply passed.</p>
+<h4>ctx.cookies.set(name, value, [options])</h4>
+<p>Set cookie <code>name</code> to <code>value</code> with <code>options</code>:</p>
+<ul>
+<li><code>signed</code> sign the cookie value</li>
+<li><code>expires</code> a <code>Date</code> for cookie expiration</li>
+<li><code>path</code> cookie path, <code>/'</code> by default</li>
+<li><code>domain</code> cookie domain</li>
+<li><code>secure</code> secure cookie</li>
+<li><code>httpOnly</code> server-accessible cookie, <strong>true</strong> by default</li>
+</ul>
+<p>Toa uses the <a href="https://github.com/jed/cookies">cookies</a> module where options are simply passed.</p>
+<h4>ctx.throw([msg], [status], [properties])</h4>
+<p>Helper method to throw an error with a <code>.status</code> property defaulting to <code>500</code> that will allow Toa to respond appropriately. The following combinations are allowed:</p>
+<pre><code class="language-js"><span class="hljs-keyword">this</span>.throw(<span class="hljs-number">403</span>);
+<span class="hljs-keyword">this</span>.throw(<span class="hljs-string">'name required'</span>, <span class="hljs-number">400</span>);
+<span class="hljs-keyword">this</span>.throw(<span class="hljs-number">400</span>, <span class="hljs-string">'name required'</span>);
+<span class="hljs-keyword">this</span>.throw(<span class="hljs-string">'something exploded'</span>);
+</code></pre>
+<p>For example <code>this.throw('name required', 400)</code> is equivalent to:</p>
+<pre><code class="language-js"><span class="hljs-keyword">var</span> err = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'name required'</span>);
+err.status = <span class="hljs-number">400</span>;
+<span class="hljs-keyword">throw</span> err;
+</code></pre>
+<p>Note that these are user-level errors and are flagged with <code>err.expose</code> meaning the messages are appropriate for client responses, which is typically not the case for error messages since you do not want to leak failure details.</p>
+<p>You may optionally pass a <code>properties</code> object which is merged into the error as-is, useful for decorating machine-friendly errors which are reported to the requester upstream.</p>
+<pre><code class="language-js"><span class="hljs-keyword">this</span>.throw(<span class="hljs-number">401</span>, <span class="hljs-string">'access_denied'</span>, { user: user });
+<span class="hljs-keyword">this</span>.throw(<span class="hljs-string">'access_denied'</span>, { user: user });
+</code></pre>
+<p>Toa uses <a href="https://github.com/jshttp/http-errors">http-errors</a> to create errors.</p>
+<h4>ctx.assert(value, [msg], [status], [properties])</h4>
+<p>Helper method to throw an error similar to <code>.throw()</code> when <code>!value</code>. Similar to node’s <a href="http://nodejs.org/api/assert.html">assert()</a> method.</p>
+<pre><code class="language-js"><span class="hljs-keyword">this</span>.assert(<span class="hljs-keyword">this</span>.state.user, <span class="hljs-number">401</span>, <span class="hljs-string">'User not found. Please login!'</span>);
+</code></pre>
+<p>Toa uses <a href="https://github.com/jshttp/http-assert">http-assert</a> for assertions.</p>
+<h4>ctx.respond</h4>
+<p>To bypass Toa’s built-in response handling, you may explicitly set <code>this.respond = false;</code>. Use this if you want to write to the raw <code>res</code> object instead of letting Toa handle the response for you.</p>
+<p>Note that using this is <strong>not</strong> supported by Toa. This may break intended functionality of Toa middleware and Toa itself. Using this property is considered a hack and is only a convenience to those wishing to use traditional <code>fn(req, res)</code> functions and middleware within Toa.</p>
+<h4>ctx.catchStream(stream)</h4>
+<p>Catch a <code>stream</code>'s error, if ‘error’ event emit from the stream, the error will be throw to Thunk’s <code>onerror</code> and response it.</p>
+<h3>Request aliases</h3>
+<p>The following accessors and alias <a href="request.md">Request</a> equivalents:</p>
+<ul>
+<li><code>ctx.header</code></li>
+<li><code>ctx.headers</code></li>
+<li><code>ctx.method</code></li>
+<li><code>ctx.method=</code></li>
+<li><code>ctx.url</code></li>
+<li><code>ctx.url=</code></li>
+<li><code>ctx.originalUrl</code></li>
+<li><code>ctx.href</code></li>
+<li><code>ctx.path</code></li>
+<li><code>ctx.path=</code></li>
+<li><code>ctx.query</code></li>
+<li><code>ctx.query=</code></li>
+<li><code>ctx.querystring</code></li>
+<li><code>ctx.querystring=</code></li>
+<li><code>ctx.host</code></li>
+<li><code>ctx.hostname</code></li>
+<li><code>ctx.fresh</code></li>
+<li><code>ctx.stale</code></li>
+<li><code>ctx.socket</code></li>
+<li><code>ctx.protocol</code></li>
+<li><code>ctx.secure</code></li>
+<li><code>ctx.ip</code></li>
+<li><code>ctx.ips</code></li>
+<li><code>ctx.subdomains</code></li>
+<li><code>ctx.is()</code></li>
+<li><code>ctx.accepts()</code></li>
+<li><code>ctx.acceptsEncodings()</code></li>
+<li><code>ctx.acceptsCharsets()</code></li>
+<li><code>ctx.acceptsLanguages()</code></li>
+<li><code>ctx.get()</code></li>
+</ul>
+<h3>Response aliases</h3>
+<p>The following accessors and alias <a href="response.md">Response</a> equivalents:</p>
+<ul>
+<li><code>ctx.body</code></li>
+<li><code>ctx.body=</code></li>
+<li><code>ctx.status</code></li>
+<li><code>ctx.status=</code></li>
+<li><code>ctx.message</code></li>
+<li><code>ctx.message=</code></li>
+<li><code>ctx.length=</code></li>
+<li><code>ctx.length</code></li>
+<li><code>ctx.type=</code></li>
+<li><code>ctx.type</code></li>
+<li><code>ctx.headerSent</code></li>
+<li><code>ctx.redirect()</code></li>
+<li><code>ctx.attachment()</code></li>
+<li><code>ctx.set()</code></li>
+<li><code>ctx.append()</code></li>
+<li><code>ctx.remove()</code></li>
+<li><code>ctx.lastModified=</code></li>
+<li><code>ctx.etag=</code></li>
+</ul>
+<h2 id="doc-request">Request</h2>
+<h3>The same as <a href="https://github.com/koajs/koa/blob/master/docs/api/request.md">Koa’s Request</a></h3>
+<p><code>Request</code> object is an abstraction on top of node’s vanilla request object, providing additional functionality that is useful for every day HTTP server development.</p>
+<h4>request.header</h4>
+<p>Request header object.</p>
+<h4>request.headers</h4>
+<p>Request header object. Alias as <code>request.header</code>.</p>
+<h4>request.method</h4>
+<p>Request method.</p>
+<h4>request.method=</h4>
+<p>Set request method, useful for implementing middleware such as <code>methodOverride()</code>.</p>
+<h4>request.length</h4>
+<p>Return request Content-Length as a number when present, or <code>undefined</code>.</p>
+<h4>request.url</h4>
+<p>Get request URL.</p>
+<h4>request.url=</h4>
+<p>Set request URL, useful for url rewrites.</p>
+<h4>request.originalUrl</h4>
+<p>Get request original URL.</p>
+<h4>request.href</h4>
+<p>Get full request URL, include <code>protocol</code>, <code>host</code> and <code>url</code>.</p>
+<pre><code class="language-js"><span class="hljs-keyword">this</span>.request.href
+<span class="hljs-comment">// =&gt; http://example.com/foo/bar?q=1</span>
+</code></pre>
+<h4>request.path</h4>
+<p>Get request pathname.</p>
+<h4>request.path=</h4>
+<p>Set request pathname and retain query-string when present.</p>
+<h4>request.querystring</h4>
+<p>Get raw query string void of <code>?</code>.</p>
+<h4>request.querystring=</h4>
+<p>Set raw query string.</p>
+<h4>request.search</h4>
+<p>Get raw query string with the <code>?</code>.</p>
+<h4>request.search=</h4>
+<p>Set raw query string.</p>
+<h4>request.host</h4>
+<p>Get host (hostname:port) when present. Supports <code>X-Forwarded-Host</code> when <code>app.proxy</code> is <strong>true</strong>, otherwise <code>Host</code> is used.</p>
+<h4>request.hostname</h4>
+<p>Get hostname when present. Supports <code>X-Forwarded-Host</code> when <code>app.proxy</code> is <strong>true</strong>, otherwise <code>Host</code> is used.</p>
+<h4>request.type</h4>
+<p>Get request <code>Content-Type</code> void of parameters such as &quot;charset&quot;.</p>
+<pre><code class="language-js"><span class="hljs-keyword">var</span> ct = <span class="hljs-keyword">this</span>.request.type;
+<span class="hljs-comment">// =&gt; "image/png"</span>
+</code></pre>
+<h4>request.charset</h4>
+<p>Get request charset when present, or <code>undefined</code>:</p>
+<pre><code class="language-js"><span class="hljs-keyword">this</span>.request.charset
+<span class="hljs-comment">// =&gt; "utf-8"</span>
+</code></pre>
+<h4>request.query</h4>
+<p>Get parsed query-string, returning an empty object when no query-string is present. Note that this getter does <em>not</em> support nested parsing.</p>
+<p>For example &quot;color=blue&amp;size=small&quot;:</p>
+<pre><code class="language-js">{
+  color: <span class="hljs-string">'blue'</span>,
+  size: <span class="hljs-string">'small'</span>
+}
+</code></pre>
+<h4>request.query=</h4>
+<p>Set query-string to the given object. Note that this setter does <em>not</em> support nested objects.</p>
+<pre><code class="language-js"><span class="hljs-keyword">this</span>.query = { next: <span class="hljs-string">'/login'</span> };
+</code></pre>
+<h4>request.fresh</h4>
+<p>Check if a request cache is &quot;fresh&quot;, aka the contents have not changed. This method is for cache negotiation between <code>If-None-Match</code> / <code>ETag</code>, and <code>If-Modified-Since</code> and <code>Last-Modified</code>. It should be referenced after setting one or more of these response headers.</p>
+<pre><code class="language-js"><span class="hljs-keyword">this</span>.set(<span class="hljs-string">'etag'</span>, <span class="hljs-string">'123'</span>);
+
+<span class="hljs-comment">// cache is ok</span>
+<span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.fresh) {
+  <span class="hljs-keyword">this</span>.status = <span class="hljs-number">304</span>;
+  <span class="hljs-keyword">return</span>;
+}
+
+<span class="hljs-comment">// cache is stale</span>
+<span class="hljs-comment">// fetch new data</span>
+<span class="hljs-keyword">this</span>.body = <span class="hljs-keyword">yield</span> db.find(<span class="hljs-string">'something'</span>);
+</code></pre>
+<h4>request.stale</h4>
+<p>Inverse of <code>request.fresh</code>.</p>
+<h4>request.protocol</h4>
+<p>Return request protocol, “https” or &quot;http&quot;. Supports <code>X-Forwarded-Proto</code> when <code>app.proxy</code> is <strong>true</strong>.</p>
+<h4>request.secure</h4>
+<p>Shorthand for <code>this.protocol == &quot;https&quot;</code> to check if a request was issued via TLS.</p>
+<h4>request.ip</h4>
+<p>Request remote address. Supports <code>X-Forwarded-For</code> when <code>app.proxy</code> is <strong>true</strong>.</p>
+<h4>request.ips</h4>
+<p>When <code>X-Forwarded-For</code> is present and <code>app.proxy</code> is enabled an array of these ips is returned, ordered from upstream -&gt; downstream. When disabled an empty array is returned.</p>
+<h4>request.subdomains</h4>
+<p>Return subdomains as an array.</p>
+<p>Subdomains are the dot-separated parts of the host before the main domain of the app. By default, the domain of the app is assumed to be the last two parts of the host. This can be changed by setting <code>app.subdomainOffset</code>.</p>
+<p>For example, if the domain is &quot;tobi.ferrets.example.com&quot;:</p>
+<p>If <code>app.subdomainOffset</code> is not set, this.subdomains is <code>[&quot;ferrets&quot;, &quot;tobi&quot;]</code>.<br>
+If <code>app.subdomainOffset</code> is 3, this.subdomains is <code>[&quot;tobi&quot;]</code>.</p>
+<h4>request.is(types...)</h4>
+<p>Check if the incoming request contains the “Content-Type” header field, and it contains any of the give mime <code>type</code>s. If there is no request body, <code>undefined</code> is returned. If there is no content type, or the match fails <code>false</code> is returned. Otherwise, it returns the matching content-type.</p>
+<pre><code class="language-js"><span class="hljs-comment">// With Content-Type: text/html; charset=utf-8</span>
+<span class="hljs-keyword">this</span>.is(<span class="hljs-string">'html'</span>); <span class="hljs-comment">// =&gt; 'html'</span>
+<span class="hljs-keyword">this</span>.is(<span class="hljs-string">'text/html'</span>); <span class="hljs-comment">// =&gt; 'text/html'</span>
+<span class="hljs-keyword">this</span>.is(<span class="hljs-string">'text/*'</span>, <span class="hljs-string">'text/html'</span>); <span class="hljs-comment">// =&gt; 'text/html'</span>
+
+<span class="hljs-comment">// When Content-Type is application/json</span>
+<span class="hljs-keyword">this</span>.is(<span class="hljs-string">'json'</span>, <span class="hljs-string">'urlencoded'</span>); <span class="hljs-comment">// =&gt; 'json'</span>
+<span class="hljs-keyword">this</span>.is(<span class="hljs-string">'application/json'</span>); <span class="hljs-comment">// =&gt; 'application/json'</span>
+<span class="hljs-keyword">this</span>.is(<span class="hljs-string">'html'</span>, <span class="hljs-string">'application/*'</span>); <span class="hljs-comment">// =&gt; 'application/json'</span>
+
+<span class="hljs-keyword">this</span>.is(<span class="hljs-string">'html'</span>); <span class="hljs-comment">// =&gt; false</span>
+</code></pre>
+<p>For example if you want to ensure that only images are sent to a given route:</p>
+<pre><code class="language-js"><span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.is(<span class="hljs-string">'image/*'</span>)) {
+  <span class="hljs-comment">// process</span>
+} <span class="hljs-keyword">else</span> {
+  <span class="hljs-keyword">this</span>.throw(<span class="hljs-number">415</span>, <span class="hljs-string">'images only!'</span>);
+}
+</code></pre>
+<h4>Content Negotiation</h4>
+<p><code>Request</code> object includes helpful content negotiation utilities powered by <a href="http://github.com/expressjs/accepts">accepts</a> and <a href="https://github.com/federomero/negotiator">negotiator</a>. These utilities are:</p>
+<ul>
+<li><code>request.accepts(types)</code></li>
+<li><code>request.acceptsEncodings(types)</code></li>
+<li><code>request.acceptsCharsets(charsets)</code></li>
+<li><code>request.acceptsLanguages(langs)</code></li>
+</ul>
+<p>If no types are supplied, <strong>all</strong> acceptable types are returned.</p>
+<p>If multiple types are supplied, the best match will be returned. If no matches are found, a <code>false</code> is returned, and you should send a <code>406 &quot;Not Acceptable&quot;</code> response to the client.</p>
+<p>In the case of missing accept headers where any type is acceptable, the first type will be returned. Thus, the order of types you supply is important.</p>
+<h4>request.accepts(types)</h4>
+<p>Check if the given <code>type(s)</code> is acceptable, returning the best match when true, otherwise <code>false</code>. The <code>type</code> value may be one or more mime type string such as &quot;application/json&quot;, the extension name such as &quot;json&quot;, or an array <code>[&quot;json&quot;, &quot;html&quot;, &quot;text/plain&quot;]</code>.</p>
+<pre><code class="language-js"><span class="hljs-comment">// Accept: text/html</span>
+<span class="hljs-keyword">this</span>.accepts(<span class="hljs-string">'html'</span>);
+<span class="hljs-comment">// =&gt; "html"</span>
+
+<span class="hljs-comment">// Accept: text/*, application/json</span>
+<span class="hljs-keyword">this</span>.accepts(<span class="hljs-string">'html'</span>);
+<span class="hljs-comment">// =&gt; "html"</span>
+<span class="hljs-keyword">this</span>.accepts(<span class="hljs-string">'text/html'</span>);
+<span class="hljs-comment">// =&gt; "text/html"</span>
+<span class="hljs-keyword">this</span>.accepts(<span class="hljs-string">'json'</span>, <span class="hljs-string">'text'</span>);
+<span class="hljs-comment">// =&gt; "json"</span>
+<span class="hljs-keyword">this</span>.accepts(<span class="hljs-string">'application/json'</span>);
+<span class="hljs-comment">// =&gt; "application/json"</span>
+
+<span class="hljs-comment">// Accept: text/*, application/json</span>
+<span class="hljs-keyword">this</span>.accepts(<span class="hljs-string">'image/png'</span>);
+<span class="hljs-keyword">this</span>.accepts(<span class="hljs-string">'png'</span>);
+<span class="hljs-comment">// =&gt; false</span>
+
+<span class="hljs-comment">// Accept: text/*;q=.5, application/json</span>
+<span class="hljs-keyword">this</span>.accepts([<span class="hljs-string">'html'</span>, <span class="hljs-string">'json'</span>]);
+<span class="hljs-keyword">this</span>.accepts(<span class="hljs-string">'html'</span>, <span class="hljs-string">'json'</span>);
+<span class="hljs-comment">// =&gt; "json"</span>
+
+<span class="hljs-comment">// No Accept header</span>
+<span class="hljs-keyword">this</span>.accepts(<span class="hljs-string">'html'</span>, <span class="hljs-string">'json'</span>);
+<span class="hljs-comment">// =&gt; "html"</span>
+<span class="hljs-keyword">this</span>.accepts(<span class="hljs-string">'json'</span>, <span class="hljs-string">'html'</span>);
+<span class="hljs-comment">// =&gt; "json"</span>
+</code></pre>
+<p>You may call <code>this.accepts()</code> as many times as you like, or use a switch:</p>
+<pre><code class="language-js"><span class="hljs-keyword">switch</span> (<span class="hljs-keyword">this</span>.accepts(<span class="hljs-string">'json'</span>, <span class="hljs-string">'html'</span>, <span class="hljs-string">'text'</span>)) {
+  <span class="hljs-keyword">case</span> <span class="hljs-string">'json'</span>: <span class="hljs-keyword">break</span>;
+  <span class="hljs-keyword">case</span> <span class="hljs-string">'html'</span>: <span class="hljs-keyword">break</span>;
+  <span class="hljs-keyword">case</span> <span class="hljs-string">'text'</span>: <span class="hljs-keyword">break</span>;
+  <span class="hljs-keyword">default</span>: <span class="hljs-keyword">this</span>.throw(<span class="hljs-number">406</span>, <span class="hljs-string">'json, html, or text only'</span>);
+}
+</code></pre>
+<h4>request.acceptsEncodings(encodings)</h4>
+<p>Check if <code>encodings</code> are acceptable, returning the best match when true, otherwise <code>false</code>. Note that you should include <code>identity</code> as one of the encodings!</p>
+<pre><code class="language-js"><span class="hljs-comment">// Accept-Encoding: gzip</span>
+<span class="hljs-keyword">this</span>.acceptsEncodings(<span class="hljs-string">'gzip'</span>, <span class="hljs-string">'deflate'</span>, <span class="hljs-string">'identity'</span>);
+<span class="hljs-comment">// =&gt; "gzip"</span>
+
+<span class="hljs-keyword">this</span>.acceptsEncodings([<span class="hljs-string">'gzip'</span>, <span class="hljs-string">'deflate'</span>, <span class="hljs-string">'identity'</span>]);
+<span class="hljs-comment">// =&gt; "gzip"</span>
+</code></pre>
+<p>When no arguments are given all accepted encodings are returned as an array:</p>
+<pre><code class="language-js"><span class="hljs-comment">// Accept-Encoding: gzip, deflate</span>
+<span class="hljs-keyword">this</span>.acceptsEncodings();
+<span class="hljs-comment">// =&gt; ["gzip", "deflate", "identity"]</span>
+</code></pre>
+<p>Note that the <code>identity</code> encoding (which means no encoding) could be unacceptable if the client explicitly sends <code>identity;q=0</code>. Although this is an edge case, you should still handle the case where this method returns <code>false</code>.</p>
+<h4>request.acceptsCharsets(charsets)</h4>
+<p>Check if <code>charsets</code> are acceptable, returning the best match when true, otherwise <code>false</code>.</p>
+<pre><code class="language-js"><span class="hljs-comment">// Accept-Charset: utf-8, iso-8859-1;q=0.2, utf-7;q=0.5</span>
+<span class="hljs-keyword">this</span>.acceptsCharsets(<span class="hljs-string">'utf-8'</span>, <span class="hljs-string">'utf-7'</span>);
+<span class="hljs-comment">// =&gt; "utf-8"</span>
+
+<span class="hljs-keyword">this</span>.acceptsCharsets([<span class="hljs-string">'utf-7'</span>, <span class="hljs-string">'utf-8'</span>]);
+<span class="hljs-comment">// =&gt; "utf-8"</span>
+</code></pre>
+<p>When no arguments are given all accepted charsets are returned as an array:</p>
+<pre><code class="language-js"><span class="hljs-comment">// Accept-Charset: utf-8, iso-8859-1;q=0.2, utf-7;q=0.5</span>
+<span class="hljs-keyword">this</span>.acceptsCharsets();
+<span class="hljs-comment">// =&gt; ["utf-8", "utf-7", "iso-8859-1"]</span>
+</code></pre>
+<h4>request.acceptsLanguages(langs)</h4>
+<p>Check if <code>langs</code> are acceptable, returning the best match when true, otherwise <code>false</code>.</p>
+<pre><code class="language-js"><span class="hljs-comment">// Accept-Language: en;q=0.8, es, pt</span>
+<span class="hljs-keyword">this</span>.acceptsLanguages(<span class="hljs-string">'es'</span>, <span class="hljs-string">'en'</span>);
+<span class="hljs-comment">// =&gt; "es"</span>
+
+<span class="hljs-keyword">this</span>.acceptsLanguages([<span class="hljs-string">'en'</span>, <span class="hljs-string">'es'</span>]);
+<span class="hljs-comment">// =&gt; "es"</span>
+</code></pre>
+<p>When no arguments are given all accepted languages are returned as an array:</p>
+<pre><code class="language-js"><span class="hljs-comment">// Accept-Language: en;q=0.8, es, pt</span>
+<span class="hljs-keyword">this</span>.acceptsLanguages();
+<span class="hljs-comment">// =&gt; ["es", "pt", "en"]</span>
+</code></pre>
+<h4>request.idempotent</h4>
+<p>Check if the request is idempotent.</p>
+<h4>request.socket</h4>
+<p>Return the request socket.</p>
+<h4>request.get(field)</h4>
+<p>Return request header.</p>
+<h2 id="doc-response">Response</h2>
+<h3>The same as <a href="https://github.com/koajs/koa/blob/master/docs/api/response.md">Koa’s Response</a></h3>
+<p><code>Response</code> object is an abstraction on top of node’s vanilla response object, providing additional functionality that is useful for every day HTTP server development.</p>
+<h4>response.header</h4>
+<p>Response header object.</p>
+<h4>response.headers</h4>
+<p>Response header object. Alias as <code>response.header</code>.</p>
+<h4>response.socket</h4>
+<p>Request socket.</p>
+<h4>response.status</h4>
+<p>Get response status. By default, <code>response.status</code> is not set unlike node’s <code>res.statusCode</code> which defaults to <code>200</code>.</p>
+<h4>response.status=</h4>
+<p>Set response status via numeric code:</p>
+<ul>
+<li>100 “continue”</li>
+<li>101 “switching protocols”</li>
+<li>102 “processing”</li>
+<li>200 “ok”</li>
+<li>201 “created”</li>
+<li>202 “accepted”</li>
+<li>203 “non-authoritative information”</li>
+<li>204 “no content”</li>
+<li>205 “reset content”</li>
+<li>206 “partial content”</li>
+<li>207 “multi-status”</li>
+<li>300 “multiple choices”</li>
+<li>301 “moved permanently”</li>
+<li>302 “moved temporarily”</li>
+<li>303 “see other”</li>
+<li>304 “not modified”</li>
+<li>305 “use proxy”</li>
+<li>307 “temporary redirect”</li>
+<li>400 “bad request”</li>
+<li>401 “unauthorized”</li>
+<li>402 “payment required”</li>
+<li>403 “forbidden”</li>
+<li>404 “not found”</li>
+<li>405 “method not allowed”</li>
+<li>406 “not acceptable”</li>
+<li>407 “proxy authentication required”</li>
+<li>408 “request time-out”</li>
+<li>409 “conflict”</li>
+<li>410 “gone”</li>
+<li>411 “length required”</li>
+<li>412 “precondition failed”</li>
+<li>413 “request entity too large”</li>
+<li>414 “request-uri too large”</li>
+<li>415 “unsupported media type”</li>
+<li>416 “requested range not satisfiable”</li>
+<li>417 “expectation failed”</li>
+<li>418 “i’m a teapot”</li>
+<li>422 “unprocessable entity”</li>
+<li>423 “locked”</li>
+<li>424 “failed dependency”</li>
+<li>425 “unordered collection”</li>
+<li>426 “upgrade required”</li>
+<li>428 “precondition required”</li>
+<li>429 “too many requests”</li>
+<li>431 “request header fields too large”</li>
+<li>500 “internal server error”</li>
+<li>501 “not implemented”</li>
+<li>502 “bad gateway”</li>
+<li>503 “service unavailable”</li>
+<li>504 “gateway time-out”</li>
+<li>505 “http version not supported”</li>
+<li>506 “variant also negotiates”</li>
+<li>507 “insufficient storage”</li>
+<li>509 “bandwidth limit exceeded”</li>
+<li>510 “not extended”</li>
+<li>511 “network authentication required”</li>
+</ul>
+<p><strong>NOTE</strong>: don’t worry too much about memorizing these strings,<br>
+if you have a typo an error will be thrown, displaying this list<br>
+so you can make a correction.</p>
+<h4>response.message</h4>
+<p>Get response status message. By default, <code>response.message</code> is associated with <code>response.status</code>.</p>
+<h4>response.message=</h4>
+<p>Set response status message to the given value.</p>
+<h4>response.length=</h4>
+<p>Set response Content-Length to the given value.</p>
+<h4>response.length</h4>
+<p>Return response Content-Length as a number when present, or deduce from <code>this.body</code> when possible, or <code>undefined</code>.</p>
+<h4>response.body</h4>
+<p>Get response body.</p>
+<h4>response.body=</h4>
+<p>Set response body to one of the following:</p>
+<ul>
+<li><code>string</code> written</li>
+<li><code>Buffer</code> written</li>
+<li><code>Stream</code> piped</li>
+<li><code>Object</code> json-stringified</li>
+<li><code>null</code> no content response</li>
+</ul>
+<p>If <code>response.status</code> has not been set, Toa will automatically set the status to <code>200</code> or <code>204</code>.</p>
+<h5>String</h5>
+<p>The Content-Type is defaulted to text/html or text/plain, both with a default charset of utf-8. The Content-Length field is also set.</p>
+<h5>Buffer</h5>
+<p>The Content-Type is defaulted to application/octet-stream, and Content-Length is also set.</p>
+<h5>Stream</h5>
+<p>The Content-Type is defaulted to application/octet-stream.</p>
+<h5>Object</h5>
+<p>The Content-Type is defaulted to application/json.</p>
+<h4>response.get(field)</h4>
+<p>Get a response header field value with case-insensitive <code>field</code>.</p>
+<pre><code class="language-js"><span class="hljs-keyword">var</span> etag = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'etag'</span>);
+</code></pre>
+<h4>response.set(field, value)</h4>
+<p>Set response header <code>field</code> to <code>value</code>:</p>
+<pre><code class="language-js"><span class="hljs-keyword">this</span>.set(<span class="hljs-string">'cache-control'</span>, <span class="hljs-string">'no-cache'</span>);
+</code></pre>
+<h4>response.append(field, value)</h4>
+<p>Append additional header <code>field</code> with value <code>val</code>.</p>
+<pre><code class="language-js"><span class="hljs-keyword">this</span>.append(<span class="hljs-string">'link'</span>, <span class="hljs-string">'&lt;http://127.0.0.1/&gt;'</span>);
+</code></pre>
+<h4>response.set(fields)</h4>
+<p>Set several response header <code>fields</code> with an object:</p>
+<pre><code class="language-js"><span class="hljs-keyword">this</span>.set({
+  <span class="hljs-string">'etag'</span>: <span class="hljs-string">'1234'</span>,
+  <span class="hljs-string">'last-modified'</span>: date
+});
+</code></pre>
+<h4>response.remove(field)</h4>
+<p>Remove header <code>field</code>.</p>
+<h4>response.type</h4>
+<p>Get response <code>Content-Type</code> void of parameters such as &quot;charset&quot;.</p>
+<pre><code class="language-js"><span class="hljs-keyword">var</span> ct = <span class="hljs-keyword">this</span>.type;
+<span class="hljs-comment">// =&gt; "image/png"</span>
+</code></pre>
+<h4>response.type=</h4>
+<p>Set response <code>Content-Type</code> via mime string or file extension.</p>
+<pre><code class="language-js"><span class="hljs-keyword">this</span>.type = <span class="hljs-string">'text/plain; charset=utf-8'</span>;
+<span class="hljs-keyword">this</span>.type = <span class="hljs-string">'image/png'</span>;
+<span class="hljs-keyword">this</span>.type = <span class="hljs-string">'.png'</span>;
+<span class="hljs-keyword">this</span>.type = <span class="hljs-string">'png'</span>;
+</code></pre>
+<p>Note: when appropriate a <code>charset</code> is selected for you, for example <code>response.type = 'html'</code> will default to &quot;utf-8&quot;, however when explicitly defined in full as <code>response.type = 'text/html'</code> no charset is assigned.</p>
+<h4>response.is(types...)</h4>
+<p>Very similar to <code>this.request.is()</code>. Check whether the response type is one of the supplied types. This is particularly useful for creating middleware that manipulate responses.</p>
+<h4>response.redirect(url, [alt])</h4>
+<p>Perform a [302] redirect to <code>url</code>.</p>
+<p>The string “back” is special-cased to provide Referrer support, when Referrer is not present <code>alt</code> or “/” is used.</p>
+<pre><code class="language-js"><span class="hljs-keyword">this</span>.redirect(<span class="hljs-string">'back'</span>);
+<span class="hljs-keyword">this</span>.redirect(<span class="hljs-string">'back'</span>, <span class="hljs-string">'/index.html'</span>);
+<span class="hljs-keyword">this</span>.redirect(<span class="hljs-string">'/login'</span>);
+<span class="hljs-keyword">this</span>.redirect(<span class="hljs-string">'http://google.com'</span>);
+</code></pre>
+<p>To alter the default status of <code>302</code>, simply assign the status before or after this call. To alter the body, assign it after this call:</p>
+<pre><code class="language-js"><span class="hljs-keyword">this</span>.status = <span class="hljs-number">301</span>;
+<span class="hljs-keyword">this</span>.redirect(<span class="hljs-string">'/cart'</span>);
+<span class="hljs-keyword">this</span>.body = <span class="hljs-string">'Redirecting to shopping cart'</span>;
+</code></pre>
+<h4>response.attachment([filename])</h4>
+<p>Set <code>Content-Disposition</code> to “attachment” to signal the client to prompt for download. Optionally specify the <code>filename</code> of the download.</p>
+<h4>response.headerSent</h4>
+<p>Check if a response header has already been sent. Useful for seeing if the client may be notified on error.</p>
+<h4>response.lastModified</h4>
+<p>Return the <code>Last-Modified</code> header as a <code>Date</code>, if it exists.</p>
+<h4>response.lastModified=</h4>
+<p>Set the <code>Last-Modified</code> header as an appropriate UTC string. You can either set it as a <code>Date</code> or date string.</p>
+<pre><code class="language-js"><span class="hljs-keyword">this</span>.response.lastModified = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>();
+</code></pre>
+<h4>response.etag=</h4>
+<p>Set the ETag of a response including the wrapped <code>&quot;</code>s. Note that there is no corresponding <code>response.etag</code> getter.</p>
+<pre><code class="language-js"><span class="hljs-keyword">this</span>.response.etag = crypto.createHash(<span class="hljs-string">'md5'</span>).update(<span class="hljs-keyword">this</span>.body).digest(<span class="hljs-string">'hex'</span>);
+</code></pre>
+<h4>response.vary(field)</h4>
+<p>Vary on <code>field</code>.</p>

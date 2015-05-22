@@ -62,7 +62,9 @@ var app = Toa(function() {
   this.body = 'Hello World!\n-- toa';
 });
 
-app.listen(3000);
+app.listen(3100, function() {
+  console.log('\n', 'listening on port', 3100, 'in dev env')
+});
 ```
 
 ### Class: Toa([server][, appBody][, options])

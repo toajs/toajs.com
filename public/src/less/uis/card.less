@@ -1,16 +1,9 @@
 .card {
-  background: @white;
+  background: transparent;
+  box-shadow: none;
   .gutter-bottom();
 
-  *:not(:first-child):last-child {
-    @media (max-width: @screen-xs-max) {
-      margin-bottom: 0 !important;
-    }
-  }
-
   > * {
-    margin-left: 0 !important;
-
     &.with-border {
       box-shadow: @shadow-b2;
     }
@@ -20,21 +13,10 @@
     line-height: @height-base;
     font-size: @size-base;
     border-bottom: none;
-    .padding-resp();
-    @media (min-width: 0) {
-      padding-bottom: 0;
-    }
+    padding: 54px 0 14px;
 
-    &.with-border {
-      .padding-resp-bottom();
-    }
-
-    .card-title {
-      .bold();
-
-      &.with-handler {
-        .text-overflow();
-      }
+    h2 {
+      font-size: 40px;
     }
 
     .handler {
@@ -74,8 +56,10 @@
   }
 
   // A card could have multi content wraps
-  .card-content {
+  .card-main {
     .padding-resp();
+    padding-left: 0 !important;
+    padding-right: 0 !important;
   }
 }
 

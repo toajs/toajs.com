@@ -1,11 +1,60 @@
+/* ==== Global Typography ==== */
+
+// Base
+body {
+  font-size: 18px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+// Selection
+::selection {
+  background: @orange;
+  color: @white-dark;
+}
+
+::-moz-selection{
+  background: @orange;
+  color: @white-dark;
+}
+
+// Font style
+.bold {
+  font-weight: 500;
+}
+
+strong, b {
+  .bold();
+}
+
 // Title
-h1, h2, h3, h4, h5, h6 {
+h1, h2 {
   margin-top: 0;
 }
 
-// Style
-.bold {
-  font-weight: 600;
+h1, h2, h3, h4, h5, h6 {
+  .bold();
 }
 
-// Font face
+// Code
+code, kbd, pre, samp {
+  font-family: Consolas, Menlo, Monaco, "Courier New", monospace;
+}
+
+code {
+  color: @white-dark;
+  background: lighten(@brand-primary, 10%);
+  border-radius: @radius-sm;
+}
+
+pre {
+  padding: 9px 11px;
+  border: none;
+  background: #30353A;
+  color: @white-dark;
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+/* ==== Font face ==== */
+

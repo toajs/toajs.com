@@ -1,0 +1,108 @@
+.documentation {
+  position: relative;
+  padding-bottom: 10px;
+  background: darken(@brand-primary, 5%);
+
+  .card {
+    color: fadeout(@white, 20%);
+
+    .card-main {
+      padding: 0;
+    }
+  }
+
+  h2, h3, h4, h5 {
+    color: @white;
+  }
+
+  .card-header {
+    color: @white;
+    padding-bottom: 54px;
+    margin: 0 !important;
+    background: @brand-primary;
+    border-bottom: 5px solid lighten(@brand-primary, 10%);
+    text-align: center;
+    box-shadow: none;
+  }
+
+  .readable {
+
+    > *:not(pre),
+    pre > * {
+      max-width: @width-container - @space-base;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    pre {
+      margin: 2em 0;
+      padding: 20px;
+      border-radius: 0;
+      background: @background;
+      color: @black-dark;
+
+      code {
+        display: block;
+        padding: 0;
+        background: transparent;
+      }
+
+      .row:before,
+      .row:after {
+        display: none !important;
+      }
+    }
+
+    code {
+      padding: 0px 3px;
+      background: fadeout(@white, 85%);
+    }
+
+    h2 {
+      margin: 2em auto 1em;
+      padding: .5em .8em;
+      background: fadeout(@white, 85%);
+      border-left: 4px solid @white-dark;
+      border-radius: 0 3px 3px 0;
+    }
+
+    a {
+      display: inline-block;
+      position: relative;
+
+      &:before {
+        content: attr(data-hover);
+        display: inline-block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 0;
+        height: 100%;
+        overflow: hidden;
+        color: @white;
+        white-space: nowrap;
+        transition: all @time-base;
+      }
+
+      &:hover {
+        // color: @brand-info;
+
+        &:before {
+          width: 100%;
+        }
+      }
+    }
+
+    .hljs-keyword, .css .rule .hljs-keyword, .hljs-winutils, .nginx .hljs-title, .hljs-subst, .hljs-request, .hljs-status {
+      color: @red;
+    }
+
+    .hljs-string, .hljs-tag .hljs-value, .hljs-phpdoc, .hljs-dartdoc, .tex .hljs-formula {
+      color: @green;
+    }
+
+    .hljs-number, .hljs-hexcolor, .ruby .hljs-constant {
+      color: @orange-deep;
+    }
+  }
+}

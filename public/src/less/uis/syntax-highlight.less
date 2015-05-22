@@ -2,20 +2,10 @@
  * github.com style (c) Vasily Polovnyov <vast@whiteants.net>
  */
 
-.hljs {
-  display: block;
-  overflow-x: auto;
-  padding: 0.5em;
-  color: #333;
-  background: #f8f8f8;
-  -webkit-text-size-adjust: none;
-}
-
 .hljs-comment,
 .diff .hljs-header,
 .hljs-javadoc {
-  color: #998;
-  font-style: italic;
+  color: @gray-dark;
 }
 
 .hljs-keyword,
@@ -25,14 +15,13 @@
 .hljs-subst,
 .hljs-request,
 .hljs-status {
-  color: #333;
-  font-weight: bold;
+  color: #E5837D;
 }
 
 .hljs-number,
 .hljs-hexcolor,
 .ruby .hljs-constant {
-  color: #008080;
+  color: @orange-deep;
 }
 
 .hljs-string,
@@ -40,7 +29,7 @@
 .hljs-phpdoc,
 .hljs-dartdoc,
 .tex .hljs-formula {
-  color: #d14;
+  color: @green-light;
 }
 
 .hljs-title,
@@ -90,10 +79,6 @@
 .tex .hljs-special,
 .hljs-prompt {
   color: #990073;
-}
-
-.hljs-built_in {
-  color: #0086b3;
 }
 
 .hljs-preprocessor,

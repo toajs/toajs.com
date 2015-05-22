@@ -12,7 +12,7 @@ const router = module.exports = new Router();
 
 // 配置 favicon 模块
 // 参考 https://github.com/toajs/toa-favicon
-const faviconModule = toaFavicon(config.publicPath + '/static/img/favicon.ico');
+const faviconModule = toaFavicon(config.publicPath + '/static/images/favicon.ico');
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 

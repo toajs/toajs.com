@@ -1,0 +1,37 @@
+.heading {
+  position: relative;
+  height: 144px * 2.3;
+  padding-top: 62px;
+  background-color: @brand-primary;
+  color: @white;
+  text-align: center;
+
+  .logo {
+    .size(150px*1.2, 80px*1.2);
+    margin: 0 auto;
+    margin-bottom: 23px;
+    text-indent: -9999px;
+    background-image: url(../images/logo@2x.png);
+    background-size: 150px*1.2 80px*1.2;
+    background-repeat: no-repeat;
+  }
+
+  .desc {
+    margin-bottom: 12px;
+    font-size: 20px;
+    color: #c5cae9;
+  }
+
+  > *:not(canvas) {
+    position: relative;
+    z-index: 2;
+  }
+
+  canvas {
+    -webkit-user-select: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0.5;
+  }
+}

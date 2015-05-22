@@ -3,7 +3,7 @@
 
 /* ==== Variables ==== */
 @import '@{bs}/variables';
-@import 'variables/main';
+@import 'variables/vapp';
 
 /* ==== Mixins ==== */
 @import '@{bs}/mixins';
@@ -11,6 +11,7 @@
 /* ==== Base ==== */
 @import 'base/color';
 @import 'base/handler';
+@import 'base/scaffold';
 @import 'base/spacing';
 @import 'base/state';
 @import 'base/typography';
@@ -21,11 +22,14 @@
 @import 'effects/object';
 
 /* ==== UIs ==== */
+@import 'uis/app-frame';
 @import 'uis/button';
 @import 'uis/card';
+@import 'uis/dropdown';
 @import 'uis/icon';
 @import 'uis/form';
 @import 'uis/loading';
+@import 'uis/readable';
 @import 'uis/scrollbar';
 @import 'uis/tooltip';
 @import 'uis/syntax-highlight';
@@ -35,7 +39,15 @@
 @import 'layout/main';
 
 /* ==== Components ==== */
-@import 'components/misc';
+@import 'components/common';
+
+@import 'components/copyright';
+@import 'components/get-started';
+@import 'components/documentation';
+@import 'components/heading';
+@import 'components/introduction';
+@import 'components/resources';
+@import 'components/thanks';
 
 /* ==== Pages ==== */
 @import 'pages/index';
