@@ -10,7 +10,8 @@ define([
   'bootstrap-md',
   'ripples',
   'particles',
-  'scrollmagic',
-  'tweenmax',
+  'ScrollMagic',
+  'TweenMax',
+  'animation-gsap',
   'hirouter'
 ], function() {});

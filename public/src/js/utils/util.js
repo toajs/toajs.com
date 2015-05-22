@@ -1,23 +1,25 @@
+'use strict';
+/* global module, define */
+
 define(function(require, exports, module) {
 
   var Util = {};
 
   Util.slideTo = function(element, top, adjust) {
-    var scrollTop, winHeight
+    var scrollTop, winHeight;
     if (!adjust) {
-      adjust = 0
+      adjust = 0;
     }
-    winHeight = $(window).height()
+    winHeight = $(window).height();
     if (top) {
-      scrollTop = element.offset().top - adjust
+      scrollTop = element.offset().top - adjust;
     } else {
-      scrollTop = element.offset().top + element.outerHeight() + adjust - winHeight
+      scrollTop = element.offset().top + element.outerHeight() + adjust - winHeight;
     }
     return $('body').animate({
       scrollTop: scrollTop
-    }, 300)
-  }
+    }, 300);
+  };
 
-  return Util
-
+  return Util;
 });

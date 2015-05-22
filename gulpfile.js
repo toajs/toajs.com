@@ -57,8 +57,11 @@ gulp.task('mocha', function() {
 });
 
 gulp.task('fonts', function() {
-  return gulp.src('public/bower/bootstrap-material-design/fonts/**')
-    .pipe(gulp.dest('public/static/fonts'));
+  return gulp.src([
+    'public/bower/bootstrap-material-design/fonts/**',
+    'public/src/fonts/**'
+  ])
+  .pipe(gulp.dest('public/static/fonts'));
 });
 
 gulp.task('less', function() {

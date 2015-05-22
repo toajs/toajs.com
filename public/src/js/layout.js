@@ -1,35 +1,31 @@
+'use strict';
+/* global module, define */
+
 define(function(require, exports, module) {
 
-  var Layout = (function() {
+  function Layout (options) {
+    this.options = options;
+    this.initialize();
+  }
 
-    function layout (options) {
-      this.options = options;
-      this.initialize();
-    }
+  Layout.prototype.initialize = function() {
+    this.ripples();
+  };
 
-    layout.prototype.initialize = function() {
-      this.ripples();
-    }
-
-    // Config ripple DOMs
-    layout.prototype.ripples = function() {
-      $.material.options.withRipples = [
-        '.btn:not(.btn-link)',
-        '.card-image',
-        '.nav-handler a',
-        '.dropdown-menu a',
-        '.pagination a',
-        '.nav-tabs a:not(.withoutripple)',
-        '.withripple'
-      ].join(',');
-      $.material.ripples();
-      return this;
-    }
-
-    return layout;
-
-  })();
+  // Config ripple DOMs
+  Layout.prototype.ripples = function() {
+    $.material.options.withRipples = [
+      '.btn:not(.btn-link)',
+      '.card-image',
+      '.nav-handler a',
+      '.dropdown-menu a',
+      '.pagination a',
+      '.nav-tabs a:not(.withoutripple)',
+      '.withripple'
+    ].join(',');
+    $.material.ripples();
+    return this;
+  };
 
   return Layout;
-
 });

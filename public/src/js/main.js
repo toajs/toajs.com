@@ -12,12 +12,12 @@ require.config({
     'particles': '../../bower/particles.js/particles',
     'ScrollMagic': '../../bower/scrollmagic/scrollmagic/uncompressed/ScrollMagic',
     'TweenMax': '../../bower/gsap/src/uncompressed/TweenMax',
-    'TimelineMax': '../../bower/gsap/src/uncompressed/TweenMax',
+    'TweenLite': '../../bower/gsap/src/uncompressed/TweenLite',
+    'TimelineMax': '../../bower/gsap/src/uncompressed/TimelineMax',
     'animation-gsap': '../../bower/scrollmagic/scrollmagic/uncompressed/plugins/animation.gsap',
     'thunks': '../../bower/thunks/thunks',
     'hirouter': '../../bower/hirouter/dist/router',
 
-    'components': './components',
     'controllers': './controllers',
     'utils': './utils'
   },
@@ -41,7 +41,8 @@ require([
   'bootstrap',
   'bootstrap-md',
   'particles',
-  'ripples'
+  'ripples',
+  'animation-gsap'
 ], function(
   $,
   Thunks,
@@ -50,9 +51,9 @@ require([
 ) {
 
   // Init Layout
-  new Layout();
+  var layout = new Layout();
 
   // Init router
-  new Router();
+  Router();
 
 });
