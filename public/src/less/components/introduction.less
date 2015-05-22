@@ -1,0 +1,66 @@
+.introduction {
+  .card {
+    margin-bottom: 0;
+  }
+
+  .features {
+    .sub-card {
+      // border-radius: @radius-base;
+      // background: @white;
+      // padding-bottom: @space-base;
+      // box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+      // .animation-enter();
+    }
+
+    .sub-card-header {
+      padding-top: @space-base;
+      border-bottom: 1px solid #edecec;
+    }
+
+    .col-sm-4 {
+      text-align: center;
+    }
+
+    h3 {
+      font-size: 20px;
+      font-weight: 300;
+    }
+
+    p {
+      display: inline-block;
+      padding: 0 @space-base;
+      font-size: 16px;
+      color: #757575;
+    }
+  }
+
+  .intro-icon-wrap {
+
+  }
+
+  .intro-icon {
+    @icon-size: 150px;
+    @border-size: 4px;
+
+    display: inline-block;
+    .square(@icon-size);
+    background-color: @white;
+    background-size: @icon-size - @border-size*2  @icon-size - @border-size*2;
+    border: @border-size solid darken(@background, 5%);
+    border-radius: 50%;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+
+    &.icon-quick-start {
+      background-image: url(../images/intro/icon-quick-start.png);
+    }
+
+    &.icon-thunks {
+      background-image: url(../images/intro/icon-thunks.png);
+    }
+
+    &.icon-modularize {
+      background-image: url(../images/intro/icon-modularize.png);
+    }
+  }
+}

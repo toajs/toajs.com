@@ -1,0 +1,136 @@
+.site-header {
+  width: 100%;
+  min-width: @width-min;
+  border: none;
+  .gutter-bottom();
+  transition: all @time-base;
+  -webkit-backface-visibility: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+
+  .github-star-handler {
+    display: inline-block;
+    position: absolute;
+    z-index: 23333;
+    top: -30px;
+    right: 50px;
+    transition: all @time-base;
+    transform: none;
+    -webkit-backface-visibility: hidden;
+
+    @media (max-width: @screen-xxs-max) {
+      right: @space-base;
+    }
+
+    .btn {
+      transition: all @time-base;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+
+      .ripple-wrapper {
+        transform: rotate(-90deg);
+      }
+
+      &:hover {
+        transform: scale(1.2) rotate(90deg);
+      }
+    }
+  }
+
+  .is-sticky & {
+    z-index: 2333;
+    opacity: 0.97;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+
+    .github-star-handler {
+      top: 25px !important;
+      bottom: auto;
+      transform: rotate(72*5deg);
+    }
+  }
+
+  &.navbar-default {
+    background: @white;
+    border-right: 0;
+    border-radius: 0;
+  }
+
+  .navbar-header {
+    width: 100%;
+    margin: 0;
+  }
+
+  .nav-handler {
+    float: left;
+    height: 56px;
+    text-align: center;
+
+    > a {
+      display: inline-block;
+      line-height: @height-base;
+      padding: 18px 30px;
+      color: @gray-darker;
+      font-size: @size-lger;
+      text-align: center;
+      border-bottom: 0px solid @brand-info;
+      transition: all @time-base;
+    }
+
+    &.with-icon {
+      > a {
+        padding: 15px 30px;
+      }
+
+      &.open > a,
+      &:hover > a {
+        padding-bottom: 12px;
+      }
+
+      .dropdown-menu {
+        left: auto;
+        right: -1px;
+        top: 100%;
+        transform-origin: 100% 0;
+        transform: scale(0.7) translateZ(0);
+      }
+
+      .cant-click:hover {
+        background: transparent;
+        color: @gray-dark;
+        cursor: text;
+      }
+    }
+
+    &.active > a {
+      background: transparent !important;
+    }
+
+    &.active > a,
+    &.open > a,
+    &:hover > a {
+      padding-bottom: 15px;
+      border-bottom: 3px solid @brand-info !important;
+    }
+
+    .dropdown {
+      .dropdown-menu {
+        margin-top: 3px;
+      }
+    }
+  }
+
+  .more-handlers {
+    border-left: 1px solid @gray-lighter;
+    border-right: 1px solid @gray-lighter;
+  }
+
+  .container-fluid {
+    position: relative;
+  }
+
+  @media (max-width: @screen-xs-max) {
+    .nav-handler {
+      &.nav-separate {
+        border-left-width: 0;
+      }
+    }
+  }
+}

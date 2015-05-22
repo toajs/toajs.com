@@ -1,0 +1,108 @@
+// Local typography
+.readable {
+  margin: 0 auto;
+
+  p,
+  pre,
+  ul,
+  ol,
+  li,
+  blockquote,
+  table {
+    margin-bottom: 1em;
+  }
+
+  i,
+  em {
+    font-style: normal;
+    margin: 0 0.23em;
+  }
+
+  a {
+    color: @brand-info;
+
+    &:hover {
+      color: lighten(@brand-info, 20%);
+    }
+  }
+
+  // Title
+  h1, h2, h3, h4, h5, h6 {
+    margin-top: 1.23em;
+  }
+
+  // h1 = h2
+  h1, h2 {
+    margin-top: 1em;
+    font-size: 30px;
+  }
+
+  // h3 = h4 = h5 = h6
+  h3, h4, h5, h6 {
+    font-size: 24px;
+  }
+
+  // List
+  ul {
+    list-style: square;
+  }
+
+  ol {
+    list-style: decimal;
+  }
+
+  ul,
+  ol {
+    list-style-position: outside;
+    margin-top: 1em;
+  }
+
+  // Image
+  p > img {
+    max-width: 700px;
+    display: block;
+    margin: 0 auto;
+  }
+
+  p > img + span {
+    display: block;
+    margin-top: 10px;
+    font-size: 16px;
+    text-align: center;
+  }
+
+  // Table
+  // Use BS3 table, eg: class="table table-bordered table-striped"
+  .table th {
+    white-space: nowrap;
+  }
+
+  // Blockquote
+  blockquote {
+    padding: 0 0 0 0.75em;
+    margin: 0 0 1em;
+    border-left: 3px solid #d9d9d9;
+  }
+
+  // Code
+  pre {
+    & + h1,
+    & + h2,
+    & + h3,
+    & + h4,
+    & + h5,
+    & + h6 {
+      margin-top: 0;
+    }
+
+    code {
+      background: transparent;
+    }
+  }
+
+  // Line
+  hr {
+    height: 1px;
+    margin: 30px auto;
+  }
+}

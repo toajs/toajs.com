@@ -1,0 +1,73 @@
+.card {
+  background: transparent;
+  box-shadow: none;
+  .gutter-bottom();
+
+  > * {
+    &.with-border {
+      box-shadow: @shadow-b2;
+    }
+  }
+
+  .card-header {
+    line-height: @height-base;
+    font-size: @size-base;
+    border-bottom: none;
+    padding: 54px 0 14px;
+
+    h2 {
+      font-size: 40px;
+    }
+
+    .handler {
+      float: right;
+      margin-left: @gutter-base;
+      font-size: 20px;
+
+      .icon {
+        float: left;
+        .iutil-adjust();
+      }
+    }
+
+    > *:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .card-footer {
+    .padding-resp-sm();
+  }
+
+  .card-tip {
+    .muted();
+  }
+
+  .card-help {
+    .muted();
+
+    .icon {
+      float: left;
+      margin-right: @gutter-base;
+      font-size: 20px;
+      color: @gray-67;
+      .iutil-adjust();
+    }
+  }
+
+  // A card could have multi content wraps
+  .card-main {
+    .padding-resp();
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
+// Hack for Special Language
+[lang="zh"] {
+  @media (min-width: @screen-sm) {
+    .card-header {
+      line-height: 1 !important;
+    }
+  }
+}

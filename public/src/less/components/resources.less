@@ -1,0 +1,86 @@
+.resources {
+  @height-content: 40px;
+
+  .card-main {
+    padding-bottom: 0;
+  }
+
+  .module-desc {
+    .gutter-bottom();
+  }
+
+  .module {
+    display: block;
+    line-height: @height-content;
+    padding: 9px;
+    border-radius: @radius-base;
+    font-size: @size-h4;
+    background: @white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    color: @gray-dark;
+    .text-overflow();
+    .gutter-bottom();
+
+    &:hover {
+      color: @gray-darker;
+      background: fadeout(@brand-primary, 90%);
+    }
+
+    .module-icon {
+      .square(@height-content);
+    }
+  }
+}
+
+.module-icon {
+  float: left;
+  margin-right: @gutter-base;
+  position: relative;
+  border-radius: @radius-base;
+  background-size: 100% 100%;
+  color: @white-dark;
+  padding: 0 4px;
+  overflow: hidden;
+  text-align: center;
+  font-size: 10px;
+
+  &.icon-ejs {
+    background-color: @amber;
+  }
+
+  &.icon-mejs {
+    background-color: @lime;
+  }
+
+  &.icon-i18n {
+    background-color: @orange;
+  }
+
+  &.icon-body {
+    background-color: @green-light;
+  }
+
+  &.icon-token {
+    background-color: @blue-light;
+  }
+
+  &.icon-router {
+    background-color: @cyan;
+  }
+
+  &.icon-static {
+    background-color: @blue;
+  }
+
+  &.icon-favicon {
+    background-color: @teal;
+  }
+
+  &.icon-session {
+    background-color: @indigo;
+  }
+
+  &.icon-compress {
+    background-color: #01665C;
+  }
+}

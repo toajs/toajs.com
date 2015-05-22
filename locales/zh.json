@@ -1,5 +1,6 @@
 {
-  "seoDescription": "A pithy and powerful web framework.",
-  "seoKeywords": "toa, web, app, http, application, framework, thunk, thunks",
-  "seoTitle": "Toa.js"
+	"seoDescription": "A pithy and powerful web framework.",
+	"seoKeywords": "toa, web, app, http, application, framework, thunk, thunks",
+	"seoTitle": "Toa | 简洁而强大的 Web 框架.",
+	"logoTitle": "logoTitle"
 }

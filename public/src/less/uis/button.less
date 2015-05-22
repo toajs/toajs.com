@@ -1,0 +1,43 @@
+.btn {
+  &:not(.btn-fab),
+  &:not(.btn-fab):hover {
+    border: 1px solid transparent;
+  }
+}
+
+.btn.btn-ghost {
+  background: transparent !important;
+
+  &.btn-primary {
+    color: @brand-primary;
+    border-color: @brand-primary;
+
+    &:hover {
+      background-color: @brand-primary;
+    }
+  }
+
+  &.btn-info {
+    color: @brand-info;
+    border-color: @brand-info;
+
+    &:hover {
+      background-color: @brand-info;
+    }
+  }
+
+  &.btn-danger {
+    color: @brand-danger;
+    border-color: @brand-danger;
+
+    &:hover {
+      background-color: @brand-danger;
+    }
+  }
+}
+
+.btn.btn-fab {
+  i {
+    top: 0;
+  }
+}

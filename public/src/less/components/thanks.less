@@ -1,0 +1,76 @@
+#thanks-gap {
+ path {
+  fill: #222222;
+  stroke: #222222;
+  }
+}
+
+.thanks {
+  padding: 80px 0 90px;
+  background: #222222;
+
+  &,
+  a {
+    color: @gray;
+  }
+
+  a:hover {
+    color: @gray-light;
+  }
+
+  .title {
+    font-family: "Helvetica Neue", Helvetica;
+    font-size: 40px;
+    margin-bottom: 50px;
+    text-align: center;
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .koa-wrap {
+    .koa-logo {
+      font: 120px 'Italiana', sans-serif;
+      line-height: 1;
+    }
+
+    hr {
+      float: right;
+      position: relative;
+      right: -15px;
+      margin: 20px 0;
+      height: 85px;
+      width: 1px;
+      background-color: rgba(255,255,255,.2);
+      border: 0;
+    }
+  }
+
+  .authors-list {
+    padding-top: 10px;
+    list-style: none;
+
+    a {
+      display: block;
+      text-align: center;
+      transform: translateZ(0);
+      -webkit-backface-visibility: hidden;
+    }
+
+    img {
+      display: inline-block;
+      .square(80px);
+      margin-bottom: 3px;
+      border-radius: 50%;
+      opacity: 0.7;
+      transition: all @time-base;
+    }
+
+    a:hover {
+
+      img {
+        opacity: 1;
+        transform: translate3D(0, -4px, 0);
+      }
+    }
+  }
+}

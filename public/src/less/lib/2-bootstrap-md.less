@@ -1,0 +1,131 @@
+@bower: '../../../bower';
+@bs-md: '@{bower}/bootstrap-material-design/less';
+
+/* ==== BS-MD ==== */
+@import '@{bs-md}/ripples';
+@import '@{bs-md}/roboto';
+
+@import "@{bs-md}/_variables.less";
+@import "@{bs-md}/_colors.less";
+@import "@{bs-md}/_mixins.less";
+@import "@{bs-md}/_icons-material-design.less";
+
+body {
+  background-color: @body-bg;
+  &.inverse {
+    background: #333333;
+    &, .form-control {
+      color: @darkbg-text;
+    }
+    .modal,
+    .panel-default,
+    .card {
+      &,
+      .form-control {
+        background-color: initial;
+        color: initial;
+      }
+    }
+
+  }
+}
+
+
+body, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4 {
+  font-family: "RobotoDraft", "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 300;
+}
+
+h5, h6{
+  font-weight: 400;
+}
+
+a, a:hover, a:focus {
+  color: @primary;
+}
+
+// Well and Jumbotrons
+@import "@{bs-md}/_welljumbo.less";
+
+// Buttons
+@import "@{bs-md}/_buttons.less";
+
+// Checkboxes
+@import "@{bs-md}/_checkboxes.less";
+
+// Toggle buttons
+@import "@{bs-md}/_togglebutton.less";
+
+// Radios
+@import "@{bs-md}/_radios.less";
+
+// Text inputs
+@import "@{bs-md}/_inputs.less";
+
+legend {
+  border-bottom: 0;
+}
+
+// Lists
+@import "@{bs-md}/_lists.less";
+
+// Alerts
+@import "@{bs-md}/_alerts.less";
+
+// Progress bar
+@import "@{bs-md}/_progress.less";
+
+// Typography
+.text-warning {
+  color: @btn-warning;
+}
+.text-primary {
+  color: @btn-primary;
+}
+.text-danger {
+  color: @btn-danger;
+}
+.text-success {
+  color: @btn-success;
+}
+.text-info {
+  color: @btn-info;
+}
+
+@import "@{bs-md}/_tabs.less";
+
+@import "@{bs-md}/_popups.less";
+
+@import "@{bs-md}/_icons.less";
+
+@import "@{bs-md}/_cards.less";
+
+@import "@{bs-md}/_dialogs.less";
+
+@import "@{bs-md}/_labels.less";
+
+@import "@{bs-md}/_panels.less";
+
+@import "@{bs-md}/_dividers.less";
+
+// Prevent highlight on mobile
+* {
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+  -webkit-tap-highlight-color: transparent;
+  &:focus {
+    outline: 0;
+  }
+}
+
+
+// External plugins
+@import "@{bs-md}/_plugin-snackbarjs.less";
+@import "@{bs-md}/_plugin-nouislider.less";
+@import "@{bs-md}/_plugin-selectize.less";
+@import "@{bs-md}/_plugin-dropdownjs.less";
+
+// Material shadows
+// Place them on bottom of stylesheet to increase the importance of it and override other same-specificity selectors
+@import "@{bs-md}/_shadows.less";
+
+@import '../variables/vdeps'; // Override

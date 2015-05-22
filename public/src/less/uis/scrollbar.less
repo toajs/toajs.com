@@ -1,0 +1,81 @@
+// Scroll Bars
+.vertical-scroll() {
+  &::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  /* Track */
+  &::-webkit-scrollbar-track {
+    border-left: 1px solid @gray;
+    background: @gray-light;
+  }
+
+  /* Handle */
+  &::-webkit-scrollbar-thumb {
+    background: @gray;
+  }
+}
+
+.horizontal-scroll() {
+  &::-webkit-scrollbar {
+    height: 12px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: @gray-light;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: @gray;
+  }
+}
+
+.thin-scroll() {
+  &::-webkit-scrollbar {
+    width: 7px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: @gray-light;
+    border-left: 2px solid transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: @gray;
+    border-left: 2px solid transparent;
+  }
+
+  &::-webkit-scrollbar-thumb:window-inactive {
+    background: @black-faint;
+  }
+}
+
+.transparent-scroll() {
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: @black-min;
+  }
+}
+
+.vertical-scroll {
+  .vertical-scroll();
+}
+
+.horizontal-scroll {
+  .horizontal-scroll();
+}
+
+.thin-scroll {
+  .thin-scroll();
+}
+
+.transparent-scroll {
+  .transparent-scroll();
+}
