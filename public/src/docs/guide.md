@@ -62,9 +62,7 @@ var app = Toa(function() {
   this.body = 'Hello World!\n-- toa';
 });
 
-app.listen(3100, function() {
-  console.log('\n', 'listening on port', 3100, 'in dev env')
-});
+app.listen(3000);
 ```
 
 ### Class: Toa([server][, appBody][, options])
@@ -148,21 +146,6 @@ app.onerror = function(err) {
 };
 ```
 
-#### app.onmessage = function(message) {}
-
-设置 `onmessage` 函数，该函数接受 `process` 的 `message` 通知，主要目的是用来处理 `pm2 gracefulReload`，也可以自己定义其行为。
-
-```js
-// default
-app.onmessage = function(msg) {
-  if (msg === 'shutdown') {
-    this.server.close(function() {
-      process.exit(0);
-    });
-  }
-};
-```
-
 #### app.listen(port, [hostname], [backlog], [callback])
 #### app.listen(path, [callback])
 #### app.listen(handle, [callback])
@@ -183,8 +166,8 @@ app.listen(3000);
 ### Difference from Koa:
 
 - remove `ctx.app`
-- remove `ctx.onerror`
 - add `ctx.catchStream`
+- add `ctx.thunk`, it is thunk function that bound a scope with `onerror`.
 - is a `EventEmitter` instance
 
 `Context` object encapsulates node's `request` and `response` objects into a single object which provides many helpful methods for writing web applications and APIs. These operations are used so frequently in HTTP server development that they are added at this level instead of a higher level framework, which would force middleware to re-implement this common functionality.
@@ -206,6 +189,10 @@ app.use(function*() {
 ```
 
 Many of the context's accessors and methods simply delegate to their `ctx.request` or `ctx.response` equivalents for convenience, and are otherwise identical. For example `ctx.type` and `ctx.length` delegate to the `response` object, and `ctx.path` and `ctx.method` delegate to the `request`.
+
+### ctx.thunk
+
+A thunk function that bound a scope with `onerror`.
 
 #### ctx.req
 
@@ -959,5 +946,3 @@ this.response.etag = crypto.createHash('md5').update(this.body).digest('hex');
 Vary on `field`.
 
 ------
-
-## Benchmark 性能

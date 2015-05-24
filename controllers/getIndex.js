@@ -1,5 +1,5 @@
 'use strict';
 
-module.exports = function(Thunk) {
+module.exports = function() {
   return this.render('index');
 };

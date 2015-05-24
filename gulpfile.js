@@ -174,7 +174,8 @@ gulp.task('rev', function() {
     prefix: config.cdnPrefix,
     dontGlobal: [/\/favicon\.ico$/],
     dontRenameFile: [/\.html$/],
-    dontUpdateReference: [/\.html$/]
+    dontUpdateReference: [/\.html$/],
+    dontSearchFile: [/\.js$/]
   });
 
   return merge2(

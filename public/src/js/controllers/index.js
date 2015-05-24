@@ -68,7 +68,7 @@ define(function(require, exports, module) {
       {
         action: 'type',
         strings: ["npm install toa^400"],
-        output: '<span class="gray">+toa@0.9.2 installed</span><br>&nbsp;',
+        output: '<span class="gray">+toa@0.10.0 installed</span><br>&nbsp;',
         postDelay: 1000
       },
       {

@@ -4,6 +4,7 @@
 const util = require('util');
 
 const Toa = require('toa');
+const pm = require('toa-pm');
 const config = require('config');
 const toaMejs = require('toa-mejs');
 const toaI18n = require('toa-i18n');
@@ -23,8 +24,8 @@ const packageInfo = require('./package.json');
  * 启动服务
  */
 
-const app = Toa(function*(Thunk) {
-  yield router.route(this, Thunk);
+const app = Toa(function*() {
+  yield router.route(this);
 }, function(err) {
   // API 请求错误默认处理
   if (this.path.startsWith('/api/')) return;
@@ -72,6 +73,7 @@ toaBody(app, {
 });
 
 app.use(toaCompress());
+pm(app);
 // 启动 server
 module.exports = app.listen(config.port);
 

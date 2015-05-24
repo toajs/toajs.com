@@ -69,17 +69,6 @@ app.onerror = <span class="hljs-function"><span class="hljs-keyword">function</s
   <span class="hljs-built_in">console</span>.error(msg.replace(<span class="hljs-regexp">/^/gm</span>, <span class="hljs-string">'  '</span>));
 };
 </code></pre>
-<h4>app.onmessage = function(message) {}</h4>
-<p>设置 <code>onmessage</code> 函数，该函数接受 <code>process</code> 的 <code>message</code> 通知，主要目的是用来处理 <code>pm2 gracefulReload</code>，也可以自己定义其行为。</p>
-<pre><code class="language-js"><span class="hljs-comment">// default</span>
-app.onmessage = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(msg)</span> </span>{
-  <span class="hljs-keyword">if</span> (msg === <span class="hljs-string">'shutdown'</span>) {
-    <span class="hljs-keyword">this</span>.server.close(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
-      process.exit(<span class="hljs-number">0</span>);
-    });
-  }
-};
-</code></pre>
 <h4>app.listen(port, [hostname], [backlog], [callback])</h4>
 <h4>app.listen(path, [callback])</h4>
 <h4>app.listen(handle, [callback])</h4>
@@ -92,8 +81,8 @@ app.listen(<span class="hljs-number">3000</span>);
 <h3>Difference from Koa:</h3>
 <ul>
 <li>remove <code>ctx.app</code></li>
-<li>remove <code>ctx.onerror</code></li>
 <li>add <code>ctx.catchStream</code></li>
+<li>add <code>ctx.thunk</code>, it is thunk function that bound a scope with <code>onerror</code>.</li>
 <li>is a <code>EventEmitter</code> instance</li>
 </ul>
 <p><code>Context</code> object encapsulates node’s <code>request</code> and <code>response</code> objects into a single object which provides many helpful methods for writing web applications and APIs. These operations are used so frequently in HTTP server development that they are added at this level instead of a higher level framework, which would force middleware to re-implement this common functionality.</p>
@@ -111,6 +100,8 @@ app.use(<span class="hljs-function"><span class="hljs-keyword">function</span>*<
 });
 </code></pre>
 <p>Many of the context’s accessors and methods simply delegate to their <code>ctx.request</code> or <code>ctx.response</code> equivalents for convenience, and are otherwise identical. For example <code>ctx.type</code> and <code>ctx.length</code> delegate to the <code>response</code> object, and <code>ctx.path</code> and <code>ctx.method</code> delegate to the <code>request</code>.</p>
+<h3>ctx.thunk</h3>
+<p>A thunk function that bound a scope with <code>onerror</code>.</p>
 <h4>ctx.req</h4>
 <p>Node’s <code>request</code> object.</p>
 <h4>ctx.res</h4>
