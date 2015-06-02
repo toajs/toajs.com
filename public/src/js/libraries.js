@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 /* global module, define */
 
 define([
@@ -14,4 +14,4 @@ define([
   'TweenMax',
   'animation-gsap',
   'hirouter'
-], function() {});
+], function () {})

@@ -1,5 +1,5 @@
-'use strict';
-/* global module, define */
+'use strict'
+/* global module */
 
 require.config({
   paths: {
@@ -28,7 +28,7 @@ require.config({
     'bootstrap-md': ['jquery'],
     'ripples': ['jquery']
   }
-});
+})
 
 require([
   'jquery',
@@ -43,17 +43,17 @@ require([
   'particles',
   'ripples',
   'animation-gsap'
-], function(
+], function (
   $,
   Thunks,
   Layout,
   Router
 ) {
-
   // Init Layout
-  var layout = new Layout();
+  var layout = new Layout()
+  layout.initialize()
 
   // Init router
-  Router();
+  Router()
 
-});
+})

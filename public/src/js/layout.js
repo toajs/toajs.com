@@ -1,19 +1,17 @@
-'use strict';
-/* global module, define */
+'use strict'
+/* global module, define, $ */
 
-define(function(require, exports, module) {
-
+define(function (require, exports, module) {
   function Layout (options) {
-    this.options = options;
-    this.initialize();
+    this.options = options
   }
 
-  Layout.prototype.initialize = function() {
-    this.ripples();
-  };
+  Layout.prototype.initialize = function () {
+    this.ripples()
+  }
 
   // Config ripple DOMs
-  Layout.prototype.ripples = function() {
+  Layout.prototype.ripples = function () {
     $.material.options.withRipples = [
       '.btn:not(.btn-link)',
       '.card-image',
@@ -22,10 +20,10 @@ define(function(require, exports, module) {
       '.pagination a',
       '.nav-tabs a:not(.withoutripple)',
       '.withripple'
-    ].join(',');
-    $.material.ripples();
-    return this;
-  };
+    ].join(',')
+    $.material.ripples()
+    return this
+  }
 
-  return Layout;
-});
+  return Layout
+})

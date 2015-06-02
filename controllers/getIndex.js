@@ -1,5 +1,5 @@
-'use strict';
+'use strict'
 
-module.exports = function() {
-  return this.render('index');
-};
+module.exports = function () {
+  return this.render('index')
+}
