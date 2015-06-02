@@ -156,16 +156,16 @@ gulp.task('rev', function () {
   })
 
   return merge2(
-    gulp.src('public/views/**/*.html', {base: 'public'}),
-    gulp.src('public/static/css/*.css', {base: 'public'}).pipe(minifyCSS()),
+    gulp.src('public/views/**/*.html'),
+    gulp.src('public/static/css/*.css').pipe(minifyCSS({rebase: false})),
     gulp.src([
       'public/static/js/app.js',
       'public/static/js/lib.js'
-    ], {base: 'public'}).pipe(uglify()),
+    ]).pipe(uglify()),
     gulp.src([
       'public/static/images/**',
       'public/static/fonts/**'
-    ], {base: 'public'})
+    ])
   )
     .pipe(revall.revision())
     .pipe(gulp.dest('public/dist'))
