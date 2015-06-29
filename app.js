@@ -28,7 +28,7 @@ const app = Toa(function *() {
 
 app.onerror = tools.logErr
 
-// 添加 ejs render 方法: `this.render(tplName, valueObj)`
+// 添加 mejs render 方法: `this.render(tplName, valueObj)`
 // 参考 https://github.com/toajs/toa-mejs
 toaMejs(app, `${config.publicPath}/views/**/*.html`, {
   layout: 'layout',
@@ -64,9 +64,9 @@ toaBody(app, {
 })
 
 app.use(toaCompress())
-pm(app)
 // 启动 server
 module.exports = app.listen(config.port)
+pm(app)
 
 tools.logInfo('app:', {
   listen: config.port,

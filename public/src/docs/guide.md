@@ -1,14 +1,18 @@
+Toa
+====
+简洁而强大的 web 框架。
+
 ## Thanks to [Koa](https://github.com/koajs/koa) and it's authors
 
 ## Summary
 
-- [Toa 简介](#toa-%E7%AE%80%E4%BB%8B)
-- [Application 应用](#application-%E5%BA%94%E7%94%A8)
-- [Context](#context)
-- [Request](#request)
-- [Response](#response)
+- [Toa 简介](#toa)
+- [Application 应用](#application)
+- [Context 对象](#context)
+- [Request 对象](#request)
+- [Response 对象](#response)
 
-## Toa 简介
+## Toa
 
 __Toa__ 修改自 __Koa__，基本架构原理与 __Koa__ 相似，`context`、`request`、`response` 三大基础对象几乎一样。但 __Toa__ 是基于 [thunks](https://github.com/thunks/thunks) 组合业务逻辑，来实现异步流程控制和异常处理。`thunks` 是一个比 `co` 更强大的异步流程控制工具。
 
@@ -16,23 +20,6 @@ __Toa__ 的异步核心是 `thunk` 函数，支持 `node.js v0.10.x`，但在支
 
 __Toa__ 与 __Koa__ 学习成本和编程体验是一致的，两者之间几乎是无缝切换。但 __Toa__ 去掉了 __Koa__ 的 `级联（Cascading）` 逻辑，弱化中间件，强化模块化组件，尽量削弱第三方组件访问应用的能力，
 使得编写大型应用的结构逻辑更简洁明了，也更安全。
-
-### 功能模块
-与 Koa 一样， Toa 也没有绑定过多的功能，而仅仅提供了一个轻量优雅的函数库，和强大的扩展能力。
-
-使用者可以根据自己的需求选择独立的功能模块或中间件，或自己实现相关功能模块。
-以下是 __Toajs__ 提供的基础性的功能模块。它们已能满足大多数的应用需求。
-
-- [toa-ejs](https://github.com/toajs/toa-ejs) Ejs render module for toa.
-- [toa-ejs](https://github.com/toajs/toa-mejs) Mejs render module for toa.
-- [toa-i18n](https://github.com/toajs/toa-i18n) I18n middleware for toa.
-- [toa-body](https://github.com/toajs/toa-body) Request body parser for toa.
-- [toa-token](https://github.com/toajs/toa-token) Token based authentication for toa.
-- [toa-router](https://github.com/toajs/toa-router) A router for toa.
-- [toa-static](https://github.com/toajs/toa-static) A static server module for toa.
-- [toa-favicon](https://github.com/toajs/toa-favicon) Favicon middleware for toa.
-- [toa-session](https://github.com/toajs/toa-session) Session middleware for toa.
-- [toa-compress](https://github.com/toajs/toa-compress) Compress responses middleware for toa.
 
 ### 安装 Toa
 
@@ -42,7 +29,7 @@ npm install toa
 
 ------
 
-## Application 应用
+## Application
 
 一个 Toa Application（以下简称 __app__）由一系列 __中间件__ 和 __模块__ 组成。__中间件__ 是指通过 `app.use` 加载的 thunk 函数或 generator 函数。__模块__ 特指在实例化 Toa 时的 `appBody` 中的功能组件。
 
@@ -51,34 +38,38 @@ npm install toa
 
 对于 web server 的一次访问请求，app 会按照顺序先运行中间件，然后再运行 `appBody` 中的模块组，最后运行内置的 `respond` 函数，将请求结果自动响应的客户端。由于 Toa 没有 `级联（Cascading）`，这些中间件或模块的运行不会有任何交叉，它们总是先运行完一个，再运行下一个。
 
-Toa 只有一个极简的内核，提供快捷的 HTTP 操作和异步流程控制能力。具体的业务功能逻辑则由中间件和模块组合实现（上面已列出开发一个应用常用的中间件或模块）。
+Toa 只有一个极简的内核，提供快捷的 HTTP 操作和异步流程控制能力。具体的业务功能逻辑则由中间件和模块组合实现。
 用户则可根据自己的业务需求，以最轻量级的方式组合自己的应用。
 
 让我们来看看 Toa 极其简单的 Hello World 应用程序：
 
 ```js
-var Toa = require('toa');
-var app = Toa(function() {
-  this.body = 'Hello World!\n-- toa';
-});
+var Toa = require('toa')
+var app = Toa(function () {
+  this.body = 'Hello World!\n-- toa'
+})
 
-app.listen(3000);
+app.listen(3000)
 ```
 
 ### Class: Toa([server][, appBody][, options])
 
-- `server`: {Object}, 可以是 http server 或 https server。
-- `appBody`: {Function} 有唯一参数 `thunk` 生成器，它的作用域已与当前的 request 请求绑定，它的 `onerror` 能捕获任何异常。`appBody` 中如果有异步逻辑，则应该封装在 `thunk` 生成器能处理的对象（thunkable），如 `generator` 函数、`generator` 对象或`promise` 对象等，并 `return` 返回（与 `thunks` 或 `Promise` 类似）。
-- `options`: {Object} 同 `thunks` 的 options，可以定义 `appBody` 中 `thunk` 作用域的 `debug` 方法和 `onerror` 方法。其中 `onerror` 方法可用于对捕获异常进行初步加工处理，再 `return` 或 `throw` 给 Toa 内置的 `onResError` 处理。如果 `onerror` 返回 `true`，则忽略该异常，继续执行后续业务逻辑。
+- `server`: {Object}, http server 或 https server 实例。
+- `appBody`: {Function} `appBody` 中如果有异步逻辑，则应该封装成 `thunk` 处理器能处理的对象（thunkable value），如 `generator` 函数、`generator` 对象、thunk 函数或`promise` 对象等，并 `return` 返回（与 `thunks` 或 `Promise` 类似）。
+- `options`: {Object} 类似 `thunks` 的 options，对于 server 的每一个 **client request**，toa app 均会用 `thunks` 生成一个的 `thunk`，挂载到 `context.thunk`，该 `thunk` 的作用域对该 **client request** 的整个生命周期生效。故 `options` 的 `debug`、`onstop`、`onerror` 也对应于该 **client request**。
 
+  - `options.debug`: {Function} 其 `this` 为 `null`。可捕获 **client request** 异步处理流程每一步结果，用于调试。
+  - `options.onstop`: {Function} 其 `this` 为 **client request** 的 `context` 对象。当调用 `context.end()` 时，会立即终止 **client request** 处理流程，`onstop` 会运行，然后 `respond` 客户端，`onstop` 可返回异步值。
+  - `options.onerror`: {Function} 其 `this` 为 **client request** 的 `context` 对象。当 **client request** 处理流程出现异常时，会抛出到 `onerror`，原有处理流程会终止，`onerror` 运行完毕后再进入 toa 内置的异常处理流程，最后 `respond` 客户端。如果 `onerror` 返回 `true`，则会忽略该异常，异常不会进入内置异常处理流程，然后直接 `respond` 客户端。
 ```js
 // with full arguments
-var app = new Toa(server, function(thunk) {
+var app = new Toa(server, function () {
   // body...
 }, {
-  debug: function() {}
-  onerror: function(error) {}
-});
+  debug: function () {},
+  onstop: function (sig) {},
+  onerror: function (error) {}
+})
 ```
 
 #### app.keys = ['key1', 'key2']
@@ -86,8 +77,8 @@ var app = new Toa(server, function(thunk) {
 设置 cookie 签名密钥，参考 [Keygrip](https://github.com/expressjs/keygrip)。
 注意，签名密钥只在配置项 `signed` 参数为真时才会生效：
 
-````javascript
-this.cookies.set('name', 'test', {signed: true});
+````js
+this.cookies.set('name', 'test', {signed: true})
 ````
 
 #### app.config = config
@@ -95,7 +86,7 @@ this.cookies.set('name', 'test', {signed: true});
 config 会被 `context.config` 继承，但 `context.config` 不会修改 `app.config`。
 
 ```js
-app.config = config;
+app.config = config
 ```
 
 app.config 默认值：
@@ -108,8 +99,8 @@ app.config 默认值：
 }
 ```
 
-#### app.use(function(callback) {})
-#### app.use(function*() {})
+#### app.use(function (callback) {})
+#### app.use(function* () {})
 
 加载中间件，返回 `app`，`fn` 必须是 `thunk` 函数或 `generator` 函数，函数中的 `this` 值为 `context`。
 
@@ -117,7 +108,7 @@ app.config 默认值：
 app.use(function (callback) {
   // task
   // this === context
-  callback(err, result);
+  callback(err, result)
 })
 ```
 
@@ -125,25 +116,48 @@ app.use(function (callback) {
 app.use(function* () {
   // task
   // this === context
-  yield result;
+  yield result
 })
 ```
 
-#### app.onerror = function(error) {}
+#### app.onerror = function (error) {}
 
 设置 `onerror` 函数，当 app 捕捉到程序运行期间的错误时，会先使用 `options.onerror`（若提供）处理，再使用内置的 `onResError` 函数处理响应给客户端，最后抛出给 `app.onerror` 处理，应用通常可以在这里判断错误类型，根据情况将错误写入日志系统。
 
 ```js
 // default
-app.onerror = function(err) {
+app.onerror = function (err) {
   // ignore null and response error
-  if (err == null || (err.status && err.status < 500)) return;
-  if (!util.isError(err)) err = new Error('non-error thrown: ' + err);
+  if (err == null || (err.status && err.status < 500)) return
+  if (!util.isError(err)) err = new Error('non-error thrown: ' + err)
 
   // catch system error
-  var msg = err.stack || err.toString();
-  console.error(msg.replace(/^/gm, '  '));
-};
+  var msg = err.stack || err.toString()
+  console.error(msg.replace(/^/gm, '  '))
+}
+```
+
+
+#### app.toListener()
+
+返回 app request listener。
+
+```js
+var http = require('http')
+var toa = require('toa')
+
+var app = toa()
+
+var server = http.createServer(app.toListener())
+server.listen(3000)
+```
+
+等效于：
+```js
+var toa = require('toa')
+
+var app = toa()
+app.listen(3000)
 ```
 
 #### app.listen(port, [hostname], [backlog], [callback])
@@ -154,20 +168,21 @@ app.onerror = function(err) {
 
 ```js
 // 与 httpServer.listen 一致
-app.listen(3000);
+app.listen(3000)
 ```
+
 
 ------
 
 ## Context
-
-### Similar to [Koa's Context](https://github.com/koajs/koa/blob/master/docs/api/context.md)
+> Similar to [Koa's Context](https://github.com/koajs/koa/blob/master/docs/api/context.md)
 
 ### Difference from Koa:
 
 - remove `ctx.app`
 - add `ctx.catchStream`
-- add `ctx.thunk`, it is thunk function that bound a scope with `onerror`.
+- add `ctx.thunk`, it is thunk function that bound a scope with `debug`, `onstop`, `onerror`.
+- add `ctx.end`, use to stopping request process and respond immediately.
 - is a `EventEmitter` instance
 
 `Context` object encapsulates node's `request` and `response` objects into a single object which provides many helpful methods for writing web applications and APIs. These operations are used so frequently in HTTP server development that they are added at this level instead of a higher level framework, which would force middleware to re-implement this common functionality.
@@ -175,24 +190,36 @@ app.listen(3000);
 A `Context` is created _per_ request, and is referenced in middleware as the receiver, or the `this` identifier, as shown in the following snippet:
 
 ```js
-var app = Toa(function*() {
-  this; // is the Context
-  this.request; // is a toa Request
-  this.response; // is a toa Response
-});
+var app = Toa(function* () {
+  this // is the Context
+  this.request // is a toa Request
+  this.response // is a toa Response
+})
 
-app.use(function*() {
-  this; // is the Context
-  this.request; // is a toa Request
-  this.response; // is a toa Response
-});
+app.use(function* () {
+  this // is the Context
+  this.request // is a toa Request
+  this.response // is a toa Response
+})
 ```
 
 Many of the context's accessors and methods simply delegate to their `ctx.request` or `ctx.response` equivalents for convenience, and are otherwise identical. For example `ctx.type` and `ctx.length` delegate to the `response` object, and `ctx.path` and `ctx.method` delegate to the `request`.
 
-### ctx.thunk
+### API
 
-A thunk function that bound a scope with `onerror`.
+`Context` specific methods and accessors.
+
+#### ctx.thunk([thunkable])
+
+A thunk function that bound a scope with `debug`, `onstop`, `onerror`.
+
+- `thunkable` thunkable value, see: https://github.com/thunks/thunks
+
+#### ctx.end([message])
+
+Use to stopping request process and respond immediately. **It should not run in `try catch` block, otherwise `onstop` will not be trigger**.
+
+- `message` String, see: https://github.com/thunks/thunks
 
 #### ctx.req
 
@@ -222,7 +249,7 @@ A Toa `Response` object.
 The recommended namespace for passing information through middleware and to your frontend views.
 
 ```js
-this.state.user = yield User.find(id);
+this.state.user = yield User.find(id)
 ```
 
 #### ctx.cookies.get(name, [options])
@@ -251,18 +278,18 @@ Toa uses the [cookies](https://github.com/jed/cookies) module where options are 
 Helper method to throw an error with a `.status` property defaulting to `500` that will allow Toa to respond appropriately. The following combinations are allowed:
 
 ```js
-this.throw(403);
-this.throw('name required', 400);
-this.throw(400, 'name required');
-this.throw('something exploded');
+this.throw(403)
+this.throw('name required', 400)
+this.throw(400, 'name required')
+this.throw('something exploded')
 ```
 
 For example `this.throw('name required', 400)` is equivalent to:
 
 ```js
-var err = new Error('name required');
-err.status = 400;
-throw err;
+var err = new Error('name required')
+err.status = 400
+throw err
 ```
 
 Note that these are user-level errors and are flagged with `err.expose` meaning the messages are appropriate for client responses, which is typically not the case for error messages since you do not want to leak failure details.
@@ -270,8 +297,8 @@ Note that these are user-level errors and are flagged with `err.expose` meaning 
 You may optionally pass a `properties` object which is merged into the error as-is, useful for decorating machine-friendly errors which are reported to the requester upstream.
 
 ```js
-this.throw(401, 'access_denied', { user: user });
-this.throw('access_denied', { user: user });
+this.throw(401, 'access_denied', {user: user})
+this.throw('access_denied', {user: user})
 ```
 
 Toa uses [http-errors](https://github.com/jshttp/http-errors) to create errors.
@@ -281,14 +308,14 @@ Toa uses [http-errors](https://github.com/jshttp/http-errors) to create errors.
 Helper method to throw an error similar to `.throw()` when `!value`. Similar to node's [assert()](http://nodejs.org/api/assert.html) method.
 
 ```js
-this.assert(this.state.user, 401, 'User not found. Please login!');
+this.assert(this.state.user, 401, 'User not found. Please login!')
 ```
 
 Toa uses [http-assert](https://github.com/jshttp/http-assert) for assertions.
 
 #### ctx.respond
 
-To bypass Toa's built-in response handling, you may explicitly set `this.respond = false;`. Use this if you want to write to the raw `res` object instead of letting Toa handle the response for you.
+To bypass Toa's built-in response handling, you may explicitly set `this.respond = false`. Use this if you want to write to the raw `res` object instead of letting Toa handle the response for you.
 
 Note that using this is __not__ supported by Toa. This may break intended functionality of Toa middleware and Toa itself. Using this property is considered a hack and is only a convenience to those wishing to use traditional `fn(req, res)` functions and middleware within Toa.
 
@@ -354,13 +381,15 @@ The following accessors and alias [Response](response.md) equivalents:
 - `ctx.lastModified=`
 - `ctx.etag=`
 
+
 ------
 
 ## Request
-
-### The same as [Koa's Request](https://github.com/koajs/koa/blob/master/docs/api/request.md)
+> The same as [Koa's Request](https://github.com/koajs/koa/blob/master/docs/api/request.md)
 
 `Request` object is an abstraction on top of node's vanilla request object, providing additional functionality that is useful for every day HTTP server development.
+
+### API
 
 #### request.header
 
@@ -440,7 +469,7 @@ Get hostname when present. Supports `X-Forwarded-Host` when `app.proxy` is __tru
 Get request `Content-Type` void of parameters such as "charset".
 
 ```js
-var ct = this.request.type;
+var ct = this.request.type
 // => "image/png"
 ```
 
@@ -471,7 +500,7 @@ For example "color=blue&size=small":
 Set query-string to the given object. Note that this setter does _not_ support nested objects.
 
 ```js
-this.query = { next: '/login' };
+this.query = {next: '/login'}
 ```
 
 #### request.fresh
@@ -479,17 +508,17 @@ this.query = { next: '/login' };
 Check if a request cache is "fresh", aka the contents have not changed. This method is for cache negotiation between `If-None-Match` / `ETag`, and `If-Modified-Since` and `Last-Modified`. It should be referenced after setting one or more of these response headers.
 
 ```js
-this.set('etag', '123');
+this.set('etag', '123')
 
 // cache is ok
 if (this.fresh) {
-  this.status = 304;
-  return;
+  this.status = 304
+  return
 }
 
 // cache is stale
 // fetch new data
-this.body = yield db.find('something');
+this.body = yield db.find('something')
 ```
 
 #### request.stale
@@ -529,16 +558,16 @@ Check if the incoming request contains the "Content-Type" header field, and it c
 
 ```js
 // With Content-Type: text/html; charset=utf-8
-this.is('html'); // => 'html'
-this.is('text/html'); // => 'text/html'
-this.is('text/*', 'text/html'); // => 'text/html'
+this.is('html') // => 'html'
+this.is('text/html') // => 'text/html'
+this.is('text/*', 'text/html') // => 'text/html'
 
 // When Content-Type is application/json
-this.is('json', 'urlencoded'); // => 'json'
-this.is('application/json'); // => 'application/json'
-this.is('html', 'application/*'); // => 'application/json'
+this.is('json', 'urlencoded') // => 'json'
+this.is('application/json') // => 'application/json'
+this.is('html', 'application/*') // => 'application/json'
 
-this.is('html'); // => false
+this.is('html') // => false
 ```
 
 For example if you want to ensure that only images are sent to a given route:
@@ -547,7 +576,7 @@ For example if you want to ensure that only images are sent to a given route:
 if (this.is('image/*')) {
   // process
 } else {
-  this.throw(415, 'images only!');
+  this.throw(415, 'images only!')
 }
 ```
 
@@ -572,33 +601,33 @@ Check if the given `type(s)` is acceptable, returning the best match when true, 
 
 ```js
 // Accept: text/html
-this.accepts('html');
+this.accepts('html')
 // => "html"
 
 // Accept: text/*, application/json
-this.accepts('html');
+this.accepts('html')
 // => "html"
-this.accepts('text/html');
+this.accepts('text/html')
 // => "text/html"
-this.accepts('json', 'text');
+this.accepts('json', 'text')
 // => "json"
-this.accepts('application/json');
+this.accepts('application/json')
 // => "application/json"
 
 // Accept: text/*, application/json
-this.accepts('image/png');
-this.accepts('png');
+this.accepts('image/png')
+this.accepts('png')
 // => false
 
 // Accept: text/*;q=.5, application/json
-this.accepts(['html', 'json']);
-this.accepts('html', 'json');
+this.accepts(['html', 'json'])
+this.accepts('html', 'json')
 // => "json"
 
 // No Accept header
-this.accepts('html', 'json');
+this.accepts('html', 'json')
 // => "html"
-this.accepts('json', 'html');
+this.accepts('json', 'html')
 // => "json"
 ```
 
@@ -606,10 +635,10 @@ You may call `this.accepts()` as many times as you like, or use a switch:
 
 ```js
 switch (this.accepts('json', 'html', 'text')) {
-  case 'json': break;
-  case 'html': break;
-  case 'text': break;
-  default: this.throw(406, 'json, html, or text only');
+  case 'json': break
+  case 'html': break
+  case 'text': break
+  default: this.throw(406, 'json, html, or text only')
 }
 ```
 
@@ -619,10 +648,10 @@ Check if `encodings` are acceptable, returning the best match when true, otherwi
 
 ```js
 // Accept-Encoding: gzip
-this.acceptsEncodings('gzip', 'deflate', 'identity');
+this.acceptsEncodings('gzip', 'deflate', 'identity')
 // => "gzip"
 
-this.acceptsEncodings(['gzip', 'deflate', 'identity']);
+this.acceptsEncodings(['gzip', 'deflate', 'identity'])
 // => "gzip"
 ```
 
@@ -630,7 +659,7 @@ When no arguments are given all accepted encodings are returned as an array:
 
 ```js
 // Accept-Encoding: gzip, deflate
-this.acceptsEncodings();
+this.acceptsEncodings()
 // => ["gzip", "deflate", "identity"]
 ```
 
@@ -642,10 +671,10 @@ Check if `charsets` are acceptable, returning the best match when true, otherwis
 
 ```js
 // Accept-Charset: utf-8, iso-8859-1;q=0.2, utf-7;q=0.5
-this.acceptsCharsets('utf-8', 'utf-7');
+this.acceptsCharsets('utf-8', 'utf-7')
 // => "utf-8"
 
-this.acceptsCharsets(['utf-7', 'utf-8']);
+this.acceptsCharsets(['utf-7', 'utf-8'])
 // => "utf-8"
 ```
 
@@ -653,7 +682,7 @@ When no arguments are given all accepted charsets are returned as an array:
 
 ```js
 // Accept-Charset: utf-8, iso-8859-1;q=0.2, utf-7;q=0.5
-this.acceptsCharsets();
+this.acceptsCharsets()
 // => ["utf-8", "utf-7", "iso-8859-1"]
 ```
 
@@ -663,10 +692,10 @@ Check if `langs` are acceptable, returning the best match when true, otherwise `
 
 ```js
 // Accept-Language: en;q=0.8, es, pt
-this.acceptsLanguages('es', 'en');
+this.acceptsLanguages('es', 'en')
 // => "es"
 
-this.acceptsLanguages(['en', 'es']);
+this.acceptsLanguages(['en', 'es'])
 // => "es"
 ```
 
@@ -674,7 +703,7 @@ When no arguments are given all accepted languages are returned as an array:
 
 ```js
 // Accept-Language: en;q=0.8, es, pt
-this.acceptsLanguages();
+this.acceptsLanguages()
 // => ["es", "pt", "en"]
 ```
 
@@ -690,13 +719,15 @@ Return the request socket.
 
 Return request header.
 
+
 ------
 
 ## Response
-
-### The same as [Koa's Response](https://github.com/koajs/koa/blob/master/docs/api/response.md)
+> The same as [Koa's Response](https://github.com/koajs/koa/blob/master/docs/api/response.md)
 
 `Response` object is an abstraction on top of node's vanilla response object, providing additional functionality that is useful for every day HTTP server development.
+
+### API
 
 #### response.header
 
@@ -832,7 +863,7 @@ The Content-Type is defaulted to application/json.
 Get a response header field value with case-insensitive `field`.
 
 ```js
-var etag = this.get('etag');
+var etag = this.get('etag')
 ```
 
 #### response.set(field, value)
@@ -840,7 +871,7 @@ var etag = this.get('etag');
 Set response header `field` to `value`:
 
 ```js
-this.set('cache-control', 'no-cache');
+this.set('cache-control', 'no-cache')
 ```
 
 #### response.append(field, value)
@@ -848,7 +879,7 @@ this.set('cache-control', 'no-cache');
 Append additional header `field` with value `val`.
 
 ```js
-this.append('link', '<http://127.0.0.1/>');
+this.append('link', '<http://127.0.0.1/>')
 ```
 
 #### response.set(fields)
@@ -859,7 +890,7 @@ Set several response header `fields` with an object:
 this.set({
   'etag': '1234',
   'last-modified': date
-});
+})
 ```
 
 #### response.remove(field)
@@ -871,7 +902,7 @@ Remove header `field`.
 Get response `Content-Type` void of parameters such as "charset".
 
 ```js
-var ct = this.type;
+var ct = this.type
 // => "image/png"
 ```
 
@@ -880,10 +911,10 @@ var ct = this.type;
 Set response `Content-Type` via mime string or file extension.
 
 ```js
-this.type = 'text/plain; charset=utf-8';
-this.type = 'image/png';
-this.type = '.png';
-this.type = 'png';
+this.type = 'text/plain; charset=utf-8'
+this.type = 'image/png'
+this.type = '.png'
+this.type = 'png'
 ```
 
 Note: when appropriate a `charset` is selected for you, for example `response.type = 'html'` will default to "utf-8", however when explicitly defined in full as `response.type = 'text/html'` no charset is assigned.
@@ -899,18 +930,18 @@ Perform a [302] redirect to `url`.
 The string "back" is special-cased to provide Referrer support, when Referrer is not present `alt` or "/" is used.
 
 ```js
-this.redirect('back');
-this.redirect('back', '/index.html');
-this.redirect('/login');
-this.redirect('http://google.com');
+this.redirect('back')
+this.redirect('back', '/index.html')
+this.redirect('/login')
+this.redirect('http://google.com')
 ```
 
 To alter the default status of `302`, simply assign the status before or after this call. To alter the body, assign it after this call:
 
 ```js
-this.status = 301;
-this.redirect('/cart');
-this.body = 'Redirecting to shopping cart';
+this.status = 301
+this.redirect('/cart')
+this.body = 'Redirecting to shopping cart'
 ```
 
 #### response.attachment([filename])
@@ -930,7 +961,7 @@ Return the `Last-Modified` header as a `Date`, if it exists.
 Set the `Last-Modified` header as an appropriate UTC string. You can either set it as a `Date` or date string.
 
 ```js
-this.response.lastModified = new Date();
+this.response.lastModified = new Date()
 ```
 
 #### response.etag=
@@ -938,11 +969,12 @@ this.response.lastModified = new Date();
 Set the ETag of a response including the wrapped `"`s. Note that there is no corresponding `response.etag` getter.
 
 ```js
-this.response.etag = crypto.createHash('md5').update(this.body).digest('hex');
+this.response.etag = crypto.createHash('md5').update(this.body).digest('hex')
 ```
 
 #### response.vary(field)
 
 Vary on `field`.
+
 
 ------
