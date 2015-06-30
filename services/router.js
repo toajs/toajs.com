@@ -25,15 +25,20 @@ var staticModule = toaStatic({
 
 // 配置静态资源路由和 views 路由
 router
-  .get('', indexView)
-  .get('/static|bower/(*)', function () {
-    return staticModule
+  .get('/', function *() {
+    this.set('Cache-Control', 'private')
+    this.set('X-XSS-Protection', '1; mode=block')
+    this.set('X-Content-Type-Options', 'nosniff')
+    yield indexView
   })
-  .get('/favicon.ico', function () {
-    return faviconModule
+  .get('/static|bower/(*)', function *() {
+    yield staticModule
   })
-  .otherwise(function () {
-    return this.render('404', {
+  .get('/favicon.ico', function *() {
+    yield faviconModule
+  })
+  .otherwise(function *() {
+    yield this.render('404', {
       message: this.path + 'is not found!'
     })
   })
