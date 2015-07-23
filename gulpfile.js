@@ -1,13 +1,15 @@
 'use strict'
 
 var gulp = require('gulp')
+var clean = require('del')
 var config = require('config')
 var merge2 = require('merge2')
 var rjs = require('gulp-rjs2')
 var less = require('gulp-less')
-var clean = require('gulp-rimraf')
+var mejs = require('gulp-mejs')
 var hljs = require('highlight.js')
 var rename = require('gulp-rename')
+var replace = require('gulp-replace')
 var nodemon = require('gulp-nodemon')
 var md = require('gulp-remarkable')
 var uglify = require('gulp-uglify')
@@ -24,13 +26,12 @@ var echoErrorAndEnd = function (err) {
   return this.emit('end')
 }
 
-gulp.task('clean', function () {
-  return gulp.src([
-      'public/views',
-      'public/dist',
-      'public/static'
-    ], {read: false})
-    .pipe(clean({force: true}))
+gulp.task('clean', function (done) {
+  clean([
+    'public/views',
+    'public/dist',
+    'public/static'
+  ], {force: true}, done)
 })
 
 gulp.task('fonts', function () {
@@ -171,6 +172,16 @@ gulp.task('rev', function () {
     .pipe(gulp.dest('public/dist'))
 })
 
+gulp.task('staticify', function () {
+  return gulp.src('public/dist/views/**/*.html')
+    .pipe(mejs.render('index', {
+      layout: 'layout',
+      locale: function () { return 'zh' }
+    }))
+    .pipe(replace(/\/static\//g, 'static/'))
+    .pipe(gulp.dest('public/dist'))
+})
+
 gulp.task('watch', function () {
   livereload.listen()
   gulp.watch('public/src/js/**/*.js', ['js'])
@@ -181,7 +192,7 @@ gulp.task('watch', function () {
 
 gulp.task('dev', sequence('clean', ['js', 'less', 'fonts', 'images', 'views', 'libCss']))
 
-gulp.task('build', sequence('dev', ['rjs-lib', 'rjs-app'], 'rev'))
+gulp.task('build', sequence('dev', ['rjs-lib', 'rjs-app'], 'rev', 'staticify'))
 
 gulp.task('default', sequence('dev'))
 
