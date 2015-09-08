@@ -1,6 +1,6 @@
 {
   "name": "toajs.com",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "dependencies": {
     "requirejs": "^2.1.18",
     "jquery": "^2.1.4",

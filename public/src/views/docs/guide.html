@@ -204,6 +204,8 @@ err.status = <span class="hljs-number">400</span>
 <span class="hljs-keyword">this</span>.throw(<span class="hljs-string">'access_denied'</span>, {user: user})
 </code></pre>
 <p>Toa uses <a href="https://github.com/jshttp/http-errors">http-errors</a> to create errors.</p>
+<h4>ctx.createError([msg], [status], [properties])</h4>
+<p>Similar to <code>ctx.throw</code>, create a error object, but don’t throw.</p>
 <h4>ctx.assert(value, [msg], [status], [properties])</h4>
 <p>Helper method to throw an error similar to <code>.throw()</code> when <code>!value</code>. Similar to node’s <a href="http://nodejs.org/api/assert.html">assert()</a> method.</p>
 <pre><code class="language-js"><span class="hljs-keyword">this</span>.assert(<span class="hljs-keyword">this</span>.state.user, <span class="hljs-number">401</span>, <span class="hljs-string">'User not found. Please login!'</span>)
@@ -338,7 +340,8 @@ err.status = <span class="hljs-number">400</span>
 </code></pre>
 <h4>request.fresh</h4>
 <p>Check if a request cache is &quot;fresh&quot;, aka the contents have not changed. This method is for cache negotiation between <code>If-None-Match</code> / <code>ETag</code>, and <code>If-Modified-Since</code> and <code>Last-Modified</code>. It should be referenced after setting one or more of these response headers.</p>
-<pre><code class="language-js"><span class="hljs-keyword">this</span>.set(<span class="hljs-string">'etag'</span>, <span class="hljs-string">'123'</span>)
+<pre><code class="language-js"><span class="hljs-keyword">this</span>.status = <span class="hljs-number">200</span>
+<span class="hljs-keyword">this</span>.set(<span class="hljs-string">'ETag'</span>, <span class="hljs-string">'123'</span>)
 
 <span class="hljs-comment">// cache is ok</span>
 <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.fresh) {
@@ -599,17 +602,17 @@ so you can make a correction.</p>
 </code></pre>
 <h4>response.set(field, value)</h4>
 <p>Set response header <code>field</code> to <code>value</code>:</p>
-<pre><code class="language-js"><span class="hljs-keyword">this</span>.set(<span class="hljs-string">'cache-control'</span>, <span class="hljs-string">'no-cache'</span>)
+<pre><code class="language-js"><span class="hljs-keyword">this</span>.set(<span class="hljs-string">'Cache-Control'</span>, <span class="hljs-string">'no-cache'</span>)
 </code></pre>
 <h4>response.append(field, value)</h4>
 <p>Append additional header <code>field</code> with value <code>val</code>.</p>
-<pre><code class="language-js"><span class="hljs-keyword">this</span>.append(<span class="hljs-string">'link'</span>, <span class="hljs-string">'&lt;http://127.0.0.1/&gt;'</span>)
+<pre><code class="language-js"><span class="hljs-keyword">this</span>.append(<span class="hljs-string">'Link'</span>, <span class="hljs-string">'&lt;http://127.0.0.1/&gt;'</span>)
 </code></pre>
 <h4>response.set(fields)</h4>
 <p>Set several response header <code>fields</code> with an object:</p>
 <pre><code class="language-js"><span class="hljs-keyword">this</span>.set({
-  <span class="hljs-string">'etag'</span>: <span class="hljs-string">'1234'</span>,
-  <span class="hljs-string">'last-modified'</span>: date
+  <span class="hljs-string">'ETag'</span>: <span class="hljs-string">'1234'</span>,
+  <span class="hljs-string">'Last-Modified'</span>: date
 })
 </code></pre>
 <h4>response.remove(field)</h4>
@@ -658,3 +661,4 @@ so you can make a correction.</p>
 </code></pre>
 <h4>response.vary(field)</h4>
 <p>Vary on <code>field</code>.</p>
+<hr>

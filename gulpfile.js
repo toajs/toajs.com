@@ -9,29 +9,32 @@ var less = require('gulp-less')
 var mejs = require('gulp-mejs')
 var hljs = require('highlight.js')
 var rename = require('gulp-rename')
-var replace = require('gulp-replace')
 var nodemon = require('gulp-nodemon')
 var md = require('gulp-remarkable')
 var uglify = require('gulp-uglify')
 var Revall = require('gulp-rev-all')
-var plumber = require('gulp-plumber')
+var replace = require('gulp-replace')
 var sequence = require('gulp-sequence')
 var concatCss = require('gulp-concat-css')
 var minifyCSS = require('gulp-minify-css')
 var livereload = require('gulp-livereload')
 var autoprefixer = require('gulp-autoprefixer')
 
-var echoErrorAndEnd = function (err) {
-  console.log(err)
-  return this.emit('end')
+var catchError = false
+function logError (stream) {
+  if (!catchError) return stream
+  return stream.on('error', function (err) {
+    console.error(err)
+    return this.emit('end')
+  })
 }
 
-gulp.task('clean', function (done) {
-  clean([
+gulp.task('clean', function () {
+  return clean([
     'public/views',
     'public/dist',
     'public/static'
-  ], {force: true}, done)
+  ], {force: true})
 })
 
 gulp.task('fonts', function () {
@@ -44,8 +47,7 @@ gulp.task('fonts', function () {
 
 gulp.task('less', function () {
   return gulp.src('public/src/less/app.less')
-    .pipe(plumber())
-    .pipe(less().on('error', echoErrorAndEnd))
+    .pipe(logError(less()))
     .pipe(autoprefixer('last 2 versions', {
       map: false
     }))
@@ -55,8 +57,7 @@ gulp.task('less', function () {
 
 gulp.task('libCss', function () {
   return gulp.src(['public/src/less/lib/**'])
-    .pipe(plumber())
-    .pipe(less().on('error', echoErrorAndEnd))
+    .pipe(logError(less()))
     .pipe(autoprefixer('last 2 versions', {
       map: false
     }))
@@ -106,8 +107,10 @@ gulp.task('md', function () {
         return '' // use external default escaping
       }
     }))
-    .pipe(rename('guide-old.html'))
-    .pipe(gulp.dest('public/views/docs'))
+    .pipe(replace(/<h2>(\w+)<\/h2>/g, function (m, p) {
+      return '<h2 id="doc-' + p.toLowerCase() + '">' + p + '</h2>'
+    }))
+    .pipe(gulp.dest('public/src/views/docs'))
 })
 
 gulp.task('rjs-lib', function () {
@@ -178,7 +181,6 @@ gulp.task('staticify', function () {
       layout: 'layout',
       locale: function () { return 'zh' }
     }))
-    .pipe(replace(/\/static\//g, 'static/'))
     .pipe(gulp.dest('public/dist'))
 })
 
@@ -190,7 +192,7 @@ gulp.task('watch', function () {
   gulp.watch('public/src/images/**', ['images'])
 })
 
-gulp.task('dev', sequence('clean', ['js', 'less', 'fonts', 'images', 'views', 'libCss']))
+gulp.task('dev', sequence('clean', 'md', ['js', 'less', 'fonts', 'images', 'views', 'libCss']))
 
 gulp.task('build', sequence('dev', ['rjs-lib', 'rjs-app'], 'rev', 'staticify'))
 
