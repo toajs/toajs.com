@@ -8,6 +8,7 @@ const toaI18n = require('toa-i18n')
 const toaBody = require('toa-body')
 const toaCompress = require('toa-compress')
 
+const ilog = require('./services/log')
 const tools = require('./services/tools')
 const router = require('./services/router')
 
@@ -20,13 +21,13 @@ const app = Toa(function *() {
 }, function (err) {
   // API 请求错误默认处理
   if (this.path.startsWith('/api/')) return
-  console.error(err.stack)
+  ilog.error(err.stack)
   // 其它错误请求重定向到 404
   this.redirect('/404')
   return true
 })
 
-app.onerror = tools.logErr
+app.onerror = ilog.error
 
 // 添加 mejs render 方法: `this.render(tplName, valueObj)`
 // 参考 https://github.com/toajs/toa-mejs
@@ -68,7 +69,7 @@ app.use(toaCompress())
 module.exports = app.listen(config.port)
 pm(app)
 
-tools.logInfo('app:', {
+ilog.info({
   listen: config.port,
   appConfig: app.config
 })

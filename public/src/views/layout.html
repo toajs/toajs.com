@@ -8,13 +8,13 @@
     <meta name="description" content="A pithy and powerful web framework.">
     <meta name="viewport" content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="HandheldFriendly" content="true">
-    <link rel="stylesheet" href="/static/css/lib.css"/>
-    <link rel="stylesheet" href="/static/css/app.css"/>
+    <link rel="stylesheet" href="static/css/lib.css"/>
+    <link rel="stylesheet" href="static/css/app.css"/>
   </head>
   <body>
     <%- it.body %>
     <% if (it.env == 'development') { %>
-    <script data-main="/static/js/main.js" src="/bower/requirejs/require.js"></script>
+    <script data-main="static/js/main.js" src="bower/requirejs/require.js"></script>
     <script>
       document.write('<script src="http://'
       + 'localhost'.split(':')[0]
@@ -22,8 +22,8 @@
       + 'script>')
     </script>
     <% } else { %>
-    <script src="/static/js/lib.js"></script>
-    <script src="/static/js/app.js"></script>
+    <script src="static/js/lib.js"></script>
+    <script src="static/js/app.js"></script>
     <% } %>
   </body>
 </html>

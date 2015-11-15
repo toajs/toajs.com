@@ -1,6 +1,7 @@
 {
   "port": 3000,
   "cdnPrefix": "",
+  "logLevel": 6,
   "publicPath": "public",
   "langs": ["zh", "en"]
 }
