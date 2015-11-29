@@ -1,3 +1,14 @@
+<h1>Toa</h1>
+<p>简洁而强大的 web 框架。</p>
+<h2>Thanks to <a href="https://github.com/koajs/koa">Koa</a> and it’s authors</h2>
+<h2 id="doc-summary">Summary</h2>
+<ul>
+<li><a href="#toa">Toa 简介</a></li>
+<li><a href="#application">Application 应用</a></li>
+<li><a href="#context">Context 对象</a></li>
+<li><a href="#request">Request 对象</a></li>
+<li><a href="#response">Response 对象</a></li>
+</ul>
 <h2 id="doc-toa">Toa</h2>
 <p><strong>Toa</strong> 修改自 <strong>Koa</strong>，基本架构原理与 <strong>Koa</strong> 相似，<code>context</code>、<code>request</code>、<code>response</code> 三大基础对象几乎一样。但 <strong>Toa</strong> 是基于 <a href="https://github.com/thunks/thunks">thunks</a> 组合业务逻辑，来实现异步流程控制和异常处理。<code>thunks</code> 是一个比 <code>co</code> 更强大的异步流程控制工具。</p>
 <p><strong>Toa</strong> 的异步核心是 <code>thunk</code> 函数，支持 <code>node.js v0.10.x</code>，但在支持 generator 的 node 环境中（io.js, node.js &gt;= v0.11.9）将会有更好地编程体验：<strong>用同步逻辑编写非阻塞的异步程序</strong>。</p>
@@ -8,10 +19,10 @@
 </code></pre>
 <hr>
 <h2 id="doc-application">Application</h2>
-<p>一个 Toa Application（以下简称 <strong>app</strong>）由一系列 <strong>中间件</strong> 和 <strong>模块</strong> 组成。<strong>中间件</strong> 是指通过 <code>app.use</code> 加载的 thunk 函数或 generator 函数。<strong>模块</strong> 特指在实例化 Toa 时的 <code>appBody</code> 中的功能组件。</p>
+<p>一个 Toa Application（以下简称 <strong>app</strong>）由一系列 <strong>中间件</strong> 和 <strong>模块</strong> 组成。<strong>中间件</strong> 是指通过 <code>app.use</code> 加载的 thunk 函数或 generator 函数。<strong>模块</strong> 特指在实例化 Toa 时的 <code>mainFn</code> 中的功能组件。</p>
 <p>这些功能组件可能是同步或异步的函数，它们的运行参数可以完全由应用开发者控制，它们对应用的访问权限可以变得极小。<br>
 这里与 Koa 的强调中间件概念有较大区别：中间件总能访问到 <code>context</code> 对象，而 Koa 的 <code>context</code> 又包含了 <code>app</code> 自身的引用。也就是说中间件能访问应用的一切资源。</p>
-<p>对于 web server 的一次访问请求，app 会按照顺序先运行中间件，然后再运行 <code>appBody</code> 中的模块组，最后运行内置的 <code>respond</code> 函数，将请求结果自动响应的客户端。由于 Toa 没有 <code>级联（Cascading）</code>，这些中间件或模块的运行不会有任何交叉，它们总是先运行完一个，再运行下一个。</p>
+<p>对于 web server 的一次访问请求，app 会按照顺序先运行中间件，然后再运行 <code>mainFn</code> 中的模块组，最后运行内置的 <code>respond</code> 函数，将请求结果自动响应的客户端。由于 Toa 没有 <code>级联（Cascading）</code>，这些中间件或模块的运行不会有任何交叉，它们总是先运行完一个，再运行下一个。</p>
 <p>Toa 只有一个极简的内核，提供快捷的 HTTP 操作和异步流程控制能力。具体的业务功能逻辑则由中间件和模块组合实现。<br>
 用户则可根据自己的业务需求，以最轻量级的方式组合自己的应用。</p>
 <p>让我们来看看 Toa 极其简单的 Hello World 应用程序：</p>
@@ -22,10 +33,10 @@
 
 app.listen(<span class="hljs-number">3000</span>)
 </code></pre>
-<h3>Class: Toa([server][, appBody][, options])</h3>
+<h3>Class: Toa([server][, mainFn][, options])</h3>
 <ul>
 <li><p><code>server</code>: {Object}, http server 或 https server 实例。</p></li>
-<li><p><code>appBody</code>: {Function} <code>appBody</code> 中如果有异步逻辑，则应该封装成 <code>thunk</code> 处理器能处理的对象（thunkable value），如 <code>generator</code> 函数、<code>generator</code> 对象、thunk 函数或<code>promise</code> 对象等，并 <code>return</code> 返回（与 <code>thunks</code> 或 <code>Promise</code> 类似）。</p></li>
+<li><p><code>mainFn</code>: {Function} <code>mainFn</code> 中如果有异步逻辑，则应该封装成 <code>thunk</code> 处理器能处理的对象（thunkable value），如 <code>generator</code> 函数、<code>generator</code> 对象、thunk 函数或<code>promise</code> 对象等，并 <code>return</code> 返回（与 <code>thunks</code> 或 <code>Promise</code> 类似）。</p></li>
 <li><p><code>options</code>: {Object} 类似 <code>thunks</code> 的 options，对于 server 的每一个 <strong>client request</strong>，toa app 均会用 <code>thunks</code> 生成一个的 <code>thunk</code>，挂载到 <code>context.thunk</code>，该 <code>thunk</code> 的作用域对该 <strong>client request</strong> 的整个生命周期生效。故 <code>options</code> 的 <code>debug</code>、<code>onstop</code>、<code>onerror</code> 也对应于该 <strong>client request</strong>。</p>
 <ul>
 <li><code>options.debug</code>: {Function} 其 <code>this</code> 为 <code>null</code>。可捕获 <strong>client request</strong> 异步处理流程每一步结果，用于调试。</li>

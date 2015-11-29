@@ -1,11 +1,11 @@
 {
   "name": "toajs.com",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "dependencies": {
-    "requirejs": "^2.1.18",
+    "requirejs": "^2.1.22",
     "jquery": "^2.1.4",
     "almond": "^0.3.1",
-    "thunks": "^4.0.0",
+    "thunks": "^4.1.0",
     "bootstrap": "^3.3.5",
     "bootstrap-material-design": "~0.3.0",
     "jquery-sticky": "~1.0.1",
