@@ -17,8 +17,8 @@ The toajs.com website.
 ```bash
 npm install
 bower install
-gulp
-npm start
+gulp build
+pm2 start pm2/release.json
 ```
 
 访问：[http://localhost:3000](http://localhost:3000)

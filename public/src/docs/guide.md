@@ -18,7 +18,7 @@ __Toa__ 修改自 __Koa__，基本架构原理与 __Koa__ 相似，`context`、`
 
 __Toa__ 的异步核心是 `thunk` 函数，支持 `node.js v0.10.x`，但在支持 generator 的 node 环境中（io.js, node.js >= v0.11.9）将会有更好地编程体验：**用同步逻辑编写非阻塞的异步程序**。
 
-__Toa__ 与 __Koa__ 学习成本和编程体验是一致的，两者之间几乎是无缝切换。但 __Toa__ 去掉了 __Koa__ 的 `级联（Cascading）` 逻辑，弱化中间件，强化模块化组件，尽量削弱第三方组件访问应用的能力，
+__Toa__ 与 __Koa__ 学习成本和编程体验是一致的，两者之间几乎是无缝切换。但 __Toa__ 去掉了 __Koa__ 的 `级联（Cascading）` 逻辑，强化中间件，强化模块化组件，尽量削弱第三方组件访问应用的能力，
 使得编写大型应用的结构逻辑更简洁明了，也更安全。
 
 ### 安装 Toa
@@ -99,8 +99,10 @@ app.config 默认值：
 }
 ```
 
+#### app.use(function () {})
 #### app.use(function (callback) {})
-#### app.use(function* () {})
+#### app.use(function * () {})
+#### app.use(async function () {})
 
 加载中间件，返回 `app`，`fn` 必须是 `thunk` 函数或 `generator` 函数，函数中的 `this` 值为 `context`。
 
@@ -113,7 +115,7 @@ app.use(function (callback) {
 ```
 
 ```js
-app.use(function* () {
+app.use(function * () {
   // task
   // this === context
   yield result
@@ -180,23 +182,26 @@ app.listen(3000)
 ### Difference from Koa:
 
 - remove `ctx.app`
-- add `ctx.catchStream`
-- add `ctx.thunk`, it is thunk function that bound a scope with `debug`, `onstop`, `onerror`.
-- add `ctx.end`, use to stopping request process and respond immediately.
-- is a `EventEmitter` instance
+- add `ctx.catchStream` method, used to catch stream's error or clean stream when some error.
+- add `ctx.thunk` method, it is thunk function that bound a scope with `debug`, `onstop`, `onerror`.
+- add `ctx.end` method, use to stopping request process and respond immediately.
+- add `ctx.ended`, indicates that the response ended.
+- add `ctx.finished`, indicates that the response finished successfully.
+- add `ctx.closed`, indicates that the response closed unexpectedly.
+- context is a `EventEmitter` instance
 
 `Context` object encapsulates node's `request` and `response` objects into a single object which provides many helpful methods for writing web applications and APIs. These operations are used so frequently in HTTP server development that they are added at this level instead of a higher level framework, which would force middleware to re-implement this common functionality.
 
 A `Context` is created _per_ request, and is referenced in middleware as the receiver, or the `this` identifier, as shown in the following snippet:
 
 ```js
-var app = Toa(function* () {
+var app = Toa(function * () {
   this // is the Context
   this.request // is a toa Request
   this.response // is a toa Response
 })
 
-app.use(function* () {
+app.use(function * () {
   this // is the Context
   this.request // is a toa Request
   this.response // is a toa Response
@@ -207,13 +212,17 @@ Many of the context's accessors and methods simply delegate to their `ctx.reques
 
 ### Events
 
+#### 'close'
+Emitted after a HTTP request closed, indicates that the socket has been closed, and `context.closed` will be `true`.
+
 #### 'end'
-Emitted after respond() was called. Indicates that body was sent.
+Emitted after respond() was called, indicates that body was sent. and `context.ended` will be `true`
 
-#### 'finished'
-Emitted after a HTTP request closes, finishes, or errors.
+#### 'finish'
+Emitted after a HTTP response finished. and `context.finished` will be `true`.
 
-A context always listen `'error'` event by `ctx.onerror`. `ctx.onerror` is a immutable error handle. So you can use `ctx.emit(error)` to deal with your exception or error.
+#### 'error'
+A context always listen `'error'` event by `ctx.onerror`. `ctx.onerror` is a **immutable** error handle. So you can use `ctx.emit('error', error)` to deal with your exception or error.
 
 ### API
 
@@ -347,6 +356,7 @@ The following accessors and alias [Request](request.md) equivalents:
 - `ctx.method=`
 - `ctx.url`
 - `ctx.url=`
+- `ctx.origin`
 - `ctx.originalUrl`
 - `ctx.href`
 - `ctx.path`
@@ -364,6 +374,7 @@ The following accessors and alias [Request](request.md) equivalents:
 - `ctx.secure`
 - `ctx.ip`
 - `ctx.ips`
+- `ctx.idempotent`
 - `ctx.subdomains`
 - `ctx.is()`
 - `ctx.accepts()`
@@ -371,6 +382,7 @@ The following accessors and alias [Request](request.md) equivalents:
 - `ctx.acceptsCharsets()`
 - `ctx.acceptsLanguages()`
 - `ctx.get()`
+- `ctx.search()`
 
 ### Response aliases
 
@@ -392,6 +404,7 @@ The following accessors and alias [Response](response.md) equivalents:
 - `ctx.set()`
 - `ctx.append()`
 - `ctx.remove()`
+- `ctx.vary()`
 - `ctx.lastModified=`
 - `ctx.etag=`
 
@@ -432,6 +445,10 @@ Get request URL.
 #### request.url=
 
 Set request URL, useful for url rewrites.
+
+#### request.origin
+
+Get origin of URL.
 
 #### request.originalUrl
 

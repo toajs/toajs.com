@@ -1,220 +1,278 @@
 {
   "name": "toajs.com",
-  "version": "1.4.5",
+  "version": "1.5.0",
   "npm-shrinkwrap-version": "200.5.1",
-  "node-version": "v4.4.4",
+  "node-version": "v4.5.0",
   "dependencies": {
     "config": {
       "version": "1.21.0",
-      "resolved": "http://registry.npm.taobao.org/config/download/config-1.21.0.tgz",
+      "resolved": "https://registry.npmjs.org/config/-/config-1.21.0.tgz",
       "dependencies": {
         "json5": {
           "version": "0.4.0",
-          "resolved": "http://registry.npm.taobao.org/json5/download/json5-0.4.0.tgz"
+          "resolved": "https://registry.npmjs.org/json5/-/json5-0.4.0.tgz"
         }
       }
     },
     "http-errors": {
       "version": "1.5.0",
-      "resolved": "http://registry.npm.taobao.org/http-errors/download/http-errors-1.5.0.tgz",
+      "resolved": "https://registry.npmjs.org/http-errors/-/http-errors-1.5.0.tgz",
       "dependencies": {
         "inherits": {
           "version": "2.0.1",
-          "resolved": "http://registry.npm.taobao.org/inherits/download/inherits-2.0.1.tgz"
+          "resolved": "https://registry.npmjs.org/inherits/-/inherits-2.0.1.tgz"
         },
         "setprototypeof": {
           "version": "1.0.1",
-          "resolved": "http://registry.npm.taobao.org/setprototypeof/download/setprototypeof-1.0.1.tgz"
+          "resolved": "https://registry.npmjs.org/setprototypeof/-/setprototypeof-1.0.1.tgz"
         },
         "statuses": {
           "version": "1.3.0",
-          "resolved": "http://registry.npm.taobao.org/statuses/download/statuses-1.3.0.tgz"
+          "resolved": "https://registry.npmjs.org/statuses/-/statuses-1.3.0.tgz"
         }
       }
     },
     "ilog": {
       "version": "1.0.3",
-      "resolved": "http://registry.npm.taobao.org/ilog/download/ilog-1.0.3.tgz"
+      "resolved": "https://registry.npmjs.org/ilog/-/ilog-1.0.3.tgz"
     },
     "thunks": {
-      "version": "4.2.2",
-      "resolved": "http://registry.npm.taobao.org/thunks/download/thunks-4.2.2.tgz"
+      "version": "4.7.0",
+      "resolved": "https://registry.npmjs.org/thunks/-/thunks-4.7.0.tgz"
     },
     "toa": {
-      "version": "1.5.1",
-      "resolved": "http://registry.npm.taobao.org/toa/download/toa-1.5.1.tgz",
+      "version": "2.0.0",
+      "resolved": "https://registry.npmjs.org/toa/-/toa-2.0.0.tgz",
       "dependencies": {
         "accepts": {
           "version": "1.3.3",
-          "resolved": "http://registry.npm.taobao.org/accepts/download/accepts-1.3.3.tgz",
+          "resolved": "https://registry.npmjs.org/accepts/-/accepts-1.3.3.tgz",
           "dependencies": {
             "negotiator": {
               "version": "0.6.1",
-              "resolved": "http://registry.npm.taobao.org/negotiator/download/negotiator-0.6.1.tgz"
+              "resolved": "https://registry.npmjs.org/negotiator/-/negotiator-0.6.1.tgz"
             }
           }
         },
         "content-disposition": {
           "version": "0.5.1",
-          "resolved": "http://registry.npm.taobao.org/content-disposition/download/content-disposition-0.5.1.tgz"
+          "resolved": "https://registry.npmjs.org/content-disposition/-/content-disposition-0.5.1.tgz"
         },
         "content-type": {
           "version": "1.0.2",
-          "resolved": "http://registry.npm.taobao.org/content-type/download/content-type-1.0.2.tgz"
+          "resolved": "https://registry.npmjs.org/content-type/-/content-type-1.0.2.tgz"
         },
         "cookies": {
           "version": "0.6.1",
-          "resolved": "http://registry.npm.taobao.org/cookies/download/cookies-0.6.1.tgz",
+          "resolved": "https://registry.npmjs.org/cookies/-/cookies-0.6.1.tgz",
           "dependencies": {
             "depd": {
               "version": "1.1.0",
-              "resolved": "http://registry.npm.taobao.org/depd/download/depd-1.1.0.tgz"
+              "resolved": "https://registry.npmjs.org/depd/-/depd-1.1.0.tgz"
             },
             "keygrip": {
               "version": "1.0.1",
-              "resolved": "http://registry.npm.taobao.org/keygrip/download/keygrip-1.0.1.tgz"
+              "resolved": "https://registry.npmjs.org/keygrip/-/keygrip-1.0.1.tgz"
             }
           }
         },
         "delegates": {
           "version": "1.0.0",
-          "resolved": "http://registry.npm.taobao.org/delegates/download/delegates-1.0.0.tgz"
+          "resolved": "https://registry.npmjs.org/delegates/-/delegates-1.0.0.tgz"
         },
         "destroy": {
           "version": "1.0.4",
-          "resolved": "http://registry.npm.taobao.org/destroy/download/destroy-1.0.4.tgz"
+          "resolved": "https://registry.npmjs.org/destroy/-/destroy-1.0.4.tgz"
         },
         "escape-html": {
           "version": "1.0.3",
-          "resolved": "http://registry.npm.taobao.org/escape-html/download/escape-html-1.0.3.tgz"
+          "resolved": "https://registry.npmjs.org/escape-html/-/escape-html-1.0.3.tgz"
         },
         "fresh": {
           "version": "0.3.0",
-          "resolved": "http://registry.npm.taobao.org/fresh/download/fresh-0.3.0.tgz"
+          "resolved": "https://registry.npmjs.org/fresh/-/fresh-0.3.0.tgz"
         },
         "mime-types": {
           "version": "2.1.11",
-          "resolved": "http://registry.npm.taobao.org/mime-types/download/mime-types-2.1.11.tgz",
+          "resolved": "https://registry.npmjs.org/mime-types/-/mime-types-2.1.11.tgz",
           "dependencies": {
             "mime-db": {
               "version": "1.23.0",
-              "resolved": "http://registry.npm.taobao.org/mime-db/download/mime-db-1.23.0.tgz"
-            }
-          }
-        },
-        "on-finished": {
-          "version": "2.3.0",
-          "resolved": "http://registry.npm.taobao.org/on-finished/download/on-finished-2.3.0.tgz",
-          "dependencies": {
-            "ee-first": {
-              "version": "1.1.1",
-              "resolved": "http://registry.npm.taobao.org/ee-first/download/ee-first-1.1.1.tgz"
+              "resolved": "https://registry.npmjs.org/mime-db/-/mime-db-1.23.0.tgz"
             }
           }
         },
         "parseurl": {
           "version": "1.3.1",
-          "resolved": "http://registry.npm.taobao.org/parseurl/download/parseurl-1.3.1.tgz"
+          "resolved": "https://registry.npmjs.org/parseurl/-/parseurl-1.3.1.tgz"
+        },
+        "statuses": {
+          "version": "1.3.0",
+          "resolved": "https://registry.npmjs.org/statuses/-/statuses-1.3.0.tgz"
         },
         "type-is": {
           "version": "1.6.13",
-          "resolved": "http://registry.npm.taobao.org/type-is/download/type-is-1.6.13.tgz",
+          "resolved": "https://registry.npmjs.org/type-is/-/type-is-1.6.13.tgz",
           "dependencies": {
             "media-typer": {
               "version": "0.3.0",
-              "resolved": "http://registry.npm.taobao.org/media-typer/download/media-typer-0.3.0.tgz"
+              "resolved": "https://registry.npmjs.org/media-typer/-/media-typer-0.3.0.tgz"
             }
           }
         },
         "vary": {
           "version": "1.1.0",
-          "resolved": "http://registry.npm.taobao.org/vary/download/vary-1.1.0.tgz"
+          "resolved": "https://registry.npmjs.org/vary/-/vary-1.1.0.tgz"
         }
       }
     },
     "toa-body": {
-      "version": "1.3.1",
-      "resolved": "http://registry.npm.taobao.org/toa-body/download/toa-body-1.3.1.tgz",
+      "version": "1.4.0",
+      "resolved": "https://registry.npmjs.org/toa-body/-/toa-body-1.4.0.tgz",
       "dependencies": {
-        "co-body": {
-          "version": "4.0.0",
-          "resolved": "http://registry.npm.taobao.org/co-body/download/co-body-4.0.0.tgz",
+        "inflation": {
+          "version": "2.0.0",
+          "resolved": "https://registry.npmjs.org/inflation/-/inflation-2.0.0.tgz"
+        },
+        "qs": {
+          "version": "5.2.1",
+          "resolved": "https://registry.npmjs.org/qs/-/qs-5.2.1.tgz"
+        },
+        "raw-body": {
+          "version": "2.1.7",
+          "resolved": "https://registry.npmjs.org/raw-body/-/raw-body-2.1.7.tgz",
           "dependencies": {
-            "qs": {
-              "version": "4.0.0",
-              "resolved": "http://registry.npm.taobao.org/qs/download/qs-4.0.0.tgz"
+            "bytes": {
+              "version": "2.4.0",
+              "resolved": "https://registry.npmjs.org/bytes/-/bytes-2.4.0.tgz"
             },
-            "raw-body": {
-              "version": "2.1.7",
-              "resolved": "http://registry.npm.taobao.org/raw-body/download/raw-body-2.1.7.tgz",
-              "dependencies": {
-                "bytes": {
-                  "version": "2.4.0",
-                  "resolved": "http://registry.npm.taobao.org/bytes/download/bytes-2.4.0.tgz"
-                },
-                "iconv-lite": {
-                  "version": "0.4.13",
-                  "resolved": "http://registry.npm.taobao.org/iconv-lite/download/iconv-lite-0.4.13.tgz"
-                },
-                "unpipe": {
-                  "version": "1.0.0",
-                  "resolved": "http://registry.npm.taobao.org/unpipe/download/unpipe-1.0.0.tgz"
-                }
-              }
+            "iconv-lite": {
+              "version": "0.4.13",
+              "resolved": "https://registry.npmjs.org/iconv-lite/-/iconv-lite-0.4.13.tgz"
+            },
+            "unpipe": {
+              "version": "1.0.0",
+              "resolved": "https://registry.npmjs.org/unpipe/-/unpipe-1.0.0.tgz"
             }
           }
-        },
-        "copy-to": {
-          "version": "2.0.1",
-          "resolved": "http://registry.npm.taobao.org/copy-to/download/copy-to-2.0.1.tgz"
         }
       }
     },
     "toa-compress": {
-      "version": "1.2.1",
-      "resolved": "http://registry.npm.taobao.org/toa-compress/download/toa-compress-1.2.1.tgz",
+      "version": "1.2.2",
+      "resolved": "https://registry.npmjs.org/toa-compress/-/toa-compress-1.2.2.tgz",
       "dependencies": {
         "compressible": {
           "version": "2.0.8",
-          "resolved": "http://registry.npm.taobao.org/compressible/download/compressible-2.0.8.tgz"
+          "resolved": "https://registry.npmjs.org/compressible/-/compressible-2.0.8.tgz",
+          "dependencies": {
+            "mime-db": {
+              "version": "1.23.0",
+              "resolved": "https://registry.npmjs.org/mime-db/-/mime-db-1.23.0.tgz"
+            }
+          }
         }
       }
     },
     "toa-favicon": {
-      "version": "1.2.1",
-      "resolved": "http://registry.npm.taobao.org/toa-favicon/download/toa-favicon-1.2.1.tgz"
+      "version": "1.2.2",
+      "resolved": "https://registry.npmjs.org/toa-favicon/-/toa-favicon-1.2.2.tgz"
     },
     "toa-i18n": {
       "version": "0.2.0",
-      "resolved": "http://registry.npm.taobao.org/toa-i18n/download/toa-i18n-0.2.0.tgz",
+      "resolved": "https://registry.npmjs.org/toa-i18n/-/toa-i18n-0.2.0.tgz",
       "dependencies": {
         "i18n": {
           "version": "0.5.0",
-          "resolved": "http://registry.npm.taobao.org/i18n/download/i18n-0.5.0.tgz",
+          "resolved": "https://registry.npmjs.org/i18n/-/i18n-0.5.0.tgz",
           "dependencies": {
+            "debug": {
+              "version": "2.2.0",
+              "resolved": "https://registry.npmjs.org/debug/-/debug-2.2.0.tgz",
+              "dependencies": {
+                "ms": {
+                  "version": "0.7.1",
+                  "resolved": "https://registry.npmjs.org/ms/-/ms-0.7.1.tgz"
+                }
+              }
+            },
             "mustache": {
               "version": "2.2.1",
-              "resolved": "http://registry.npm.taobao.org/mustache/download/mustache-2.2.1.tgz"
+              "resolved": "https://registry.npmjs.org/mustache/-/mustache-2.2.1.tgz"
             },
             "sprintf": {
               "version": "0.1.5",
-              "resolved": "http://registry.npm.taobao.org/sprintf/download/sprintf-0.1.5.tgz"
+              "resolved": "https://registry.npmjs.org/sprintf/-/sprintf-0.1.5.tgz"
             }
           }
         }
       }
     },
     "toa-mejs": {
-      "version": "0.3.2",
-      "resolved": "http://registry.npm.taobao.org/toa-mejs/download/toa-mejs-0.3.2.tgz",
+      "version": "0.4.0",
+      "resolved": "https://registry.npmjs.org/toa-mejs/-/toa-mejs-0.4.0.tgz",
       "dependencies": {
         "mejs": {
-          "version": "0.7.0",
-          "resolved": "http://registry.npm.taobao.org/mejs/download/mejs-0.7.0.tgz",
+          "version": "0.8.2",
+          "resolved": "https://registry.npmjs.org/mejs/-/mejs-0.8.2.tgz",
           "dependencies": {
             "glob": {
-              "version": "6.0.4",
-              "resolved": "http://registry.npm.taobao.org/glob/download/glob-6.0.4.tgz"
+              "version": "7.0.6",
+              "resolved": "https://registry.npmjs.org/glob/-/glob-7.0.6.tgz",
+              "dependencies": {
+                "fs.realpath": {
+                  "version": "1.0.0",
+                  "resolved": "https://registry.npmjs.org/fs.realpath/-/fs.realpath-1.0.0.tgz"
+                },
+                "inflight": {
+                  "version": "1.0.5",
+                  "resolved": "https://registry.npmjs.org/inflight/-/inflight-1.0.5.tgz",
+                  "dependencies": {
+                    "wrappy": {
+                      "version": "1.0.2",
+                      "resolved": "https://registry.npmjs.org/wrappy/-/wrappy-1.0.2.tgz"
+                    }
+                  }
+                },
+                "inherits": {
+                  "version": "2.0.3",
+                  "resolved": "https://registry.npmjs.org/inherits/-/inherits-2.0.3.tgz"
+                },
+                "minimatch": {
+                  "version": "3.0.3",
+                  "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-3.0.3.tgz",
+                  "dependencies": {
+                    "brace-expansion": {
+                      "version": "1.1.6",
+                      "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-1.1.6.tgz",
+                      "dependencies": {
+                        "balanced-match": {
+                          "version": "0.4.2",
+                          "resolved": "https://registry.npmjs.org/balanced-match/-/balanced-match-0.4.2.tgz"
+                        },
+                        "concat-map": {
+                          "version": "0.0.1",
+                          "resolved": "https://registry.npmjs.org/concat-map/-/concat-map-0.0.1.tgz"
+                        }
+                      }
+                    }
+                  }
+                },
+                "once": {
+                  "version": "1.4.0",
+                  "resolved": "https://registry.npmjs.org/once/-/once-1.4.0.tgz",
+                  "dependencies": {
+                    "wrappy": {
+                      "version": "1.0.2",
+                      "resolved": "https://registry.npmjs.org/wrappy/-/wrappy-1.0.2.tgz"
+                    }
+                  }
+                },
+                "path-is-absolute": {
+                  "version": "1.0.0",
+                  "resolved": "https://registry.npmjs.org/path-is-absolute/-/path-is-absolute-1.0.0.tgz"
+                }
+              }
             }
           }
         }
@@ -222,37 +280,57 @@
     },
     "toa-pm": {
       "version": "0.2.2",
-      "resolved": "http://registry.npm.taobao.org/toa-pm/download/toa-pm-0.2.2.tgz"
+      "resolved": "https://registry.npmjs.org/toa-pm/-/toa-pm-0.2.2.tgz"
     },
     "toa-router": {
-      "version": "1.3.3",
-      "resolved": "http://registry.npm.taobao.org/toa-router/download/toa-router-1.3.3.tgz",
+      "version": "1.5.1",
+      "resolved": "https://registry.npmjs.org/toa-router/-/toa-router-1.5.1.tgz",
       "dependencies": {
         "methods": {
           "version": "1.1.2",
-          "resolved": "http://registry.npm.taobao.org/methods/download/methods-1.1.2.tgz"
+          "resolved": "https://registry.npmjs.org/methods/-/methods-1.1.2.tgz"
         },
         "route-trie": {
-          "version": "1.2.6",
-          "resolved": "http://registry.npm.taobao.org/route-trie/download/route-trie-1.2.6.tgz"
+          "version": "1.2.7",
+          "resolved": "https://registry.npmjs.org/route-trie/-/route-trie-1.2.7.tgz"
         }
       }
     },
     "toa-static": {
       "version": "0.5.2",
-      "resolved": "http://registry.npm.taobao.org/toa-static/download/toa-static-0.5.2.tgz",
+      "resolved": "https://registry.npmjs.org/toa-static/-/toa-static-0.5.2.tgz",
       "dependencies": {
         "file-cache": {
           "version": "0.3.3",
-          "resolved": "http://registry.npm.taobao.org/file-cache/download/file-cache-0.3.3.tgz",
+          "resolved": "https://registry.npmjs.org/file-cache/-/file-cache-0.3.3.tgz",
           "dependencies": {
+            "compressible": {
+              "version": "2.0.8",
+              "resolved": "https://registry.npmjs.org/compressible/-/compressible-2.0.8.tgz",
+              "dependencies": {
+                "mime-db": {
+                  "version": "1.23.0",
+                  "resolved": "https://registry.npmjs.org/mime-db/-/mime-db-1.23.0.tgz"
+                }
+              }
+            },
             "lrucache": {
               "version": "0.2.0",
-              "resolved": "http://registry.npm.taobao.org/lrucache/download/lrucache-0.2.0.tgz"
+              "resolved": "https://registry.npmjs.org/lrucache/-/lrucache-0.2.0.tgz"
+            },
+            "mime-types": {
+              "version": "2.1.11",
+              "resolved": "https://registry.npmjs.org/mime-types/-/mime-types-2.1.11.tgz",
+              "dependencies": {
+                "mime-db": {
+                  "version": "1.23.0",
+                  "resolved": "https://registry.npmjs.org/mime-db/-/mime-db-1.23.0.tgz"
+                }
+              }
             },
             "thunks": {
               "version": "3.5.2",
-              "resolved": "http://registry.npm.taobao.org/thunks/download/thunks-3.5.2.tgz"
+              "resolved": "https://registry.npmjs.org/thunks/-/thunks-3.5.2.tgz"
             }
           }
         }

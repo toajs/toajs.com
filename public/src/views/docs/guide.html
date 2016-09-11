@@ -12,7 +12,7 @@
 <h2 id="doc-toa">Toa</h2>
 <p><strong>Toa</strong> 修改自 <strong>Koa</strong>，基本架构原理与 <strong>Koa</strong> 相似，<code>context</code>、<code>request</code>、<code>response</code> 三大基础对象几乎一样。但 <strong>Toa</strong> 是基于 <a href="https://github.com/thunks/thunks">thunks</a> 组合业务逻辑，来实现异步流程控制和异常处理。<code>thunks</code> 是一个比 <code>co</code> 更强大的异步流程控制工具。</p>
 <p><strong>Toa</strong> 的异步核心是 <code>thunk</code> 函数，支持 <code>node.js v0.10.x</code>，但在支持 generator 的 node 环境中（io.js, node.js &gt;= v0.11.9）将会有更好地编程体验：<strong>用同步逻辑编写非阻塞的异步程序</strong>。</p>
-<p><strong>Toa</strong> 与 <strong>Koa</strong> 学习成本和编程体验是一致的，两者之间几乎是无缝切换。但 <strong>Toa</strong> 去掉了 <strong>Koa</strong> 的 <code>级联（Cascading）</code> 逻辑，弱化中间件，强化模块化组件，尽量削弱第三方组件访问应用的能力，<br>
+<p><strong>Toa</strong> 与 <strong>Koa</strong> 学习成本和编程体验是一致的，两者之间几乎是无缝切换。但 <strong>Toa</strong> 去掉了 <strong>Koa</strong> 的 <code>级联（Cascading）</code> 逻辑，强化中间件，强化模块化组件，尽量削弱第三方组件访问应用的能力，<br>
 使得编写大型应用的结构逻辑更简洁明了，也更安全。</p>
 <h3>安装 Toa</h3>
 <pre><code>npm <span class="hljs-keyword">install</span> toa
@@ -70,8 +70,10 @@ app.listen(<span class="hljs-number">3000</span>)
   poweredBy: <span class="hljs-string">'Toa'</span>
 }
 </code></pre>
+<h4>app.use(function () {})</h4>
 <h4>app.use(function (callback) {})</h4>
-<h4>app.use(function* () {})</h4>
+<h4>app.use(function * () {})</h4>
+<h4>app.use(async function () {})</h4>
 <p>加载中间件，返回 <code>app</code>，<code>fn</code> 必须是 <code>thunk</code> 函数或 <code>generator</code> 函数，函数中的 <code>this</code> 值为 <code>context</code>。</p>
 <pre><code class="language-js">app.use(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">callback</span>) </span>{
   <span class="hljs-comment">// task</span>
@@ -79,7 +81,7 @@ app.listen(<span class="hljs-number">3000</span>)
   callback(err, result)
 })
 </code></pre>
-<pre><code class="language-js">app.use(<span class="hljs-function"><span class="hljs-keyword">function</span>* (<span class="hljs-params"></span>) </span>{
+<pre><code class="language-js">app.use(<span class="hljs-function"><span class="hljs-keyword">function</span> * (<span class="hljs-params"></span>) </span>{
   <span class="hljs-comment">// task</span>
   <span class="hljs-comment">// this === context</span>
   <span class="hljs-keyword">yield</span> result
@@ -129,26 +131,38 @@ app.listen(<span class="hljs-number">3000</span>)
 <h3>Difference from Koa:</h3>
 <ul>
 <li>remove <code>ctx.app</code></li>
-<li>add <code>ctx.catchStream</code></li>
-<li>add <code>ctx.thunk</code>, it is thunk function that bound a scope with <code>debug</code>, <code>onstop</code>, <code>onerror</code>.</li>
-<li>add <code>ctx.end</code>, use to stopping request process and respond immediately.</li>
-<li>is a <code>EventEmitter</code> instance</li>
+<li>add <code>ctx.catchStream</code> method, used to catch stream’s error or clean stream when some error.</li>
+<li>add <code>ctx.thunk</code> method, it is thunk function that bound a scope with <code>debug</code>, <code>onstop</code>, <code>onerror</code>.</li>
+<li>add <code>ctx.end</code> method, use to stopping request process and respond immediately.</li>
+<li>add <code>ctx.ended</code>, indicates that the response ended.</li>
+<li>add <code>ctx.finished</code>, indicates that the response finished successfully.</li>
+<li>add <code>ctx.closed</code>, indicates that the response closed unexpectedly.</li>
+<li>context is a <code>EventEmitter</code> instance</li>
 </ul>
 <p><code>Context</code> object encapsulates node’s <code>request</code> and <code>response</code> objects into a single object which provides many helpful methods for writing web applications and APIs. These operations are used so frequently in HTTP server development that they are added at this level instead of a higher level framework, which would force middleware to re-implement this common functionality.</p>
 <p>A <code>Context</code> is created <em>per</em> request, and is referenced in middleware as the receiver, or the <code>this</code> identifier, as shown in the following snippet:</p>
-<pre><code class="language-js"><span class="hljs-keyword">var</span> app = Toa(<span class="hljs-function"><span class="hljs-keyword">function</span>* (<span class="hljs-params"></span>) </span>{
+<pre><code class="language-js"><span class="hljs-keyword">var</span> app = Toa(<span class="hljs-function"><span class="hljs-keyword">function</span> * (<span class="hljs-params"></span>) </span>{
   <span class="hljs-keyword">this</span> <span class="hljs-comment">// is the Context</span>
   <span class="hljs-keyword">this</span>.request <span class="hljs-comment">// is a toa Request</span>
   <span class="hljs-keyword">this</span>.response <span class="hljs-comment">// is a toa Response</span>
 })
 
-app.use(<span class="hljs-function"><span class="hljs-keyword">function</span>* (<span class="hljs-params"></span>) </span>{
+app.use(<span class="hljs-function"><span class="hljs-keyword">function</span> * (<span class="hljs-params"></span>) </span>{
   <span class="hljs-keyword">this</span> <span class="hljs-comment">// is the Context</span>
   <span class="hljs-keyword">this</span>.request <span class="hljs-comment">// is a toa Request</span>
   <span class="hljs-keyword">this</span>.response <span class="hljs-comment">// is a toa Response</span>
 })
 </code></pre>
 <p>Many of the context’s accessors and methods simply delegate to their <code>ctx.request</code> or <code>ctx.response</code> equivalents for convenience, and are otherwise identical. For example <code>ctx.type</code> and <code>ctx.length</code> delegate to the <code>response</code> object, and <code>ctx.path</code> and <code>ctx.method</code> delegate to the <code>request</code>.</p>
+<h3>Events</h3>
+<h4>‘close’</h4>
+<p>Emitted after a HTTP request closed, indicates that the socket has been closed, and <code>context.closed</code> will be <code>true</code>.</p>
+<h4>‘end’</h4>
+<p>Emitted after respond() was called, indicates that body was sent. and <code>context.ended</code> will be <code>true</code></p>
+<h4>‘finish’</h4>
+<p>Emitted after a HTTP response finished. and <code>context.finished</code> will be <code>true</code>.</p>
+<h4>‘error’</h4>
+<p>A context always listen <code>'error'</code> event by <code>ctx.onerror</code>. <code>ctx.onerror</code> is a <strong>immutable</strong> error handle. So you can use <code>ctx.emit('error', error)</code> to deal with your exception or error.</p>
 <h3>API</h3>
 <p><code>Context</code> specific methods and accessors.</p>
 <h4>ctx.thunk([thunkable])</h4>
@@ -215,9 +229,9 @@ err.status = <span class="hljs-number">400</span>
 <span class="hljs-keyword">this</span>.throw(<span class="hljs-string">'access_denied'</span>, {user: user})
 </code></pre>
 <p>Toa uses <a href="https://github.com/jshttp/http-errors">http-errors</a> to create errors.</p>
-<h4>ctx.createError([msg], [status], [properties])</h4>
+<h4>ctx.createError([status], [msg], [properties])</h4>
 <p>Similar to <code>ctx.throw</code>, create a error object, but don’t throw.</p>
-<h4>ctx.assert(value, [msg], [status], [properties])</h4>
+<h4>ctx.assert(value, [status], [msg], [properties])</h4>
 <p>Helper method to throw an error similar to <code>.throw()</code> when <code>!value</code>. Similar to node’s <a href="http://nodejs.org/api/assert.html">assert()</a> method.</p>
 <pre><code class="language-js"><span class="hljs-keyword">this</span>.assert(<span class="hljs-keyword">this</span>.state.user, <span class="hljs-number">401</span>, <span class="hljs-string">'User not found. Please login!'</span>)
 </code></pre>
@@ -236,6 +250,7 @@ err.status = <span class="hljs-number">400</span>
 <li><code>ctx.method=</code></li>
 <li><code>ctx.url</code></li>
 <li><code>ctx.url=</code></li>
+<li><code>ctx.origin</code></li>
 <li><code>ctx.originalUrl</code></li>
 <li><code>ctx.href</code></li>
 <li><code>ctx.path</code></li>
@@ -253,6 +268,7 @@ err.status = <span class="hljs-number">400</span>
 <li><code>ctx.secure</code></li>
 <li><code>ctx.ip</code></li>
 <li><code>ctx.ips</code></li>
+<li><code>ctx.idempotent</code></li>
 <li><code>ctx.subdomains</code></li>
 <li><code>ctx.is()</code></li>
 <li><code>ctx.accepts()</code></li>
@@ -260,6 +276,7 @@ err.status = <span class="hljs-number">400</span>
 <li><code>ctx.acceptsCharsets()</code></li>
 <li><code>ctx.acceptsLanguages()</code></li>
 <li><code>ctx.get()</code></li>
+<li><code>ctx.search()</code></li>
 </ul>
 <h3>Response aliases</h3>
 <p>The following accessors and alias <a href="response.md">Response</a> equivalents:</p>
@@ -280,6 +297,7 @@ err.status = <span class="hljs-number">400</span>
 <li><code>ctx.set()</code></li>
 <li><code>ctx.append()</code></li>
 <li><code>ctx.remove()</code></li>
+<li><code>ctx.vary()</code></li>
 <li><code>ctx.lastModified=</code></li>
 <li><code>ctx.etag=</code></li>
 </ul>
@@ -304,6 +322,8 @@ err.status = <span class="hljs-number">400</span>
 <p>Get request URL.</p>
 <h4>request.url=</h4>
 <p>Set request URL, useful for url rewrites.</p>
+<h4>request.origin</h4>
+<p>Get origin of URL.</p>
 <h4>request.originalUrl</h4>
 <p>Get request original URL.</p>
 <h4>request.href</h4>
