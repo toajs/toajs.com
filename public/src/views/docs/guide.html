@@ -10,53 +10,47 @@
 <li><a href="#response">Response 对象</a></li>
 </ul>
 <h2 id="doc-toa">Toa</h2>
-<p><strong>Toa</strong> 修改自 <strong>Koa</strong>，基本架构原理与 <strong>Koa</strong> 相似，<code>context</code>、<code>request</code>、<code>response</code> 三大基础对象几乎一样。但 <strong>Toa</strong> 是基于 <a href="https://github.com/thunks/thunks">thunks</a> 组合业务逻辑，来实现异步流程控制和异常处理。<code>thunks</code> 是一个比 <code>co</code> 更强大的异步流程控制工具。</p>
-<p><strong>Toa</strong> 的异步核心是 <code>thunk</code> 函数，支持 <code>node.js v0.10.x</code>，但在支持 generator 的 node 环境中（io.js, node.js &gt;= v0.11.9）将会有更好地编程体验：<strong>用同步逻辑编写非阻塞的异步程序</strong>。</p>
-<p><strong>Toa</strong> 与 <strong>Koa</strong> 学习成本和编程体验是一致的，两者之间几乎是无缝切换。但 <strong>Toa</strong> 去掉了 <strong>Koa</strong> 的 <code>级联（Cascading）</code> 逻辑，强化中间件，强化模块化组件，尽量削弱第三方组件访问应用的能力，<br>
-使得编写大型应用的结构逻辑更简洁明了，也更安全。</p>
+<p><strong>Toa</strong> 修改自 <strong>Koa</strong>，基本架构原理与 <strong>Koa</strong> 相似，<code>context</code>、<code>request</code>、<code>response</code> 三大基础对象几乎一样。</p>
+<p><strong>Toa</strong> 是基于 <a href="https://github.com/thunks/thunks">thunks</a> 组合业务逻辑，来实现异步流程控制和异常处理。<code>thunks</code> 是一个比 <code>co</code> 更强大的异步流程控制工具，支持所有形式的异步控制，包括 callback，promise，generator，async/await 等。</p>
+<p><strong>Toa</strong> 支持 <code>Node.js v0.12</code> 以上，但在高版本中将有更好的体验和性能，如 <code>&gt;=v4</code> 的版本支持 generator 函数，<code>&gt;=v7</code> 的版本支持 async/await 函数，这些特性支持<strong>用同步逻辑编写非阻塞的异步程序</strong>。</p>
+<p><strong>Toa</strong> 与 <strong>Koa</strong> 学习成本和编程体验是一致的，两者之间几乎是无缝切换。但 <strong>Toa</strong> 去掉了 <strong>Koa</strong> 的 <code>级联（Cascading）</code> 逻辑，强化中间件，尽量削弱第三方组件访问应用的能力，使得编写大型应用的结构逻辑更简洁明了，也更安全。</p>
 <h3>安装 Toa</h3>
 <pre><code>npm <span class="hljs-keyword">install</span> toa
 </code></pre>
 <hr>
 <h2 id="doc-application">Application</h2>
-<p>一个 Toa Application（以下简称 <strong>app</strong>）由一系列 <strong>中间件</strong> 和 <strong>模块</strong> 组成。<strong>中间件</strong> 是指通过 <code>app.use</code> 加载的 thunk 函数或 generator 函数。<strong>模块</strong> 特指在实例化 Toa 时的 <code>mainFn</code> 中的功能组件。</p>
-<p>这些功能组件可能是同步或异步的函数，它们的运行参数可以完全由应用开发者控制，它们对应用的访问权限可以变得极小。<br>
-这里与 Koa 的强调中间件概念有较大区别：中间件总能访问到 <code>context</code> 对象，而 Koa 的 <code>context</code> 又包含了 <code>app</code> 自身的引用。也就是说中间件能访问应用的一切资源。</p>
-<p>对于 web server 的一次访问请求，app 会按照顺序先运行中间件，然后再运行 <code>mainFn</code> 中的模块组，最后运行内置的 <code>respond</code> 函数，将请求结果自动响应的客户端。由于 Toa 没有 <code>级联（Cascading）</code>，这些中间件或模块的运行不会有任何交叉，它们总是先运行完一个，再运行下一个。</p>
-<p>Toa 只有一个极简的内核，提供快捷的 HTTP 操作和异步流程控制能力。具体的业务功能逻辑则由中间件和模块组合实现。<br>
-用户则可根据自己的业务需求，以最轻量级的方式组合自己的应用。</p>
+<p>一个 Toa Application（以下简称 <strong>app</strong>）由一系列 <strong>中间件</strong> 组成。<strong>中间件</strong> 是指通过 <code>app.use</code> 加载的同步函数、thunk 函数、generator 函数或 async/await 函数。</p>
+<p>对于 web server 的一次访问请求，app 会按照顺序先运行中间件，然后再运行业务逻辑中 <code>context.after(hook)</code> 动态添加的 hooks，最后运行内置的 <code>respond</code> 函数，将请求结果自动响应的客户端。由于 Toa 没有 <code>级联（Cascading）</code>，这些中间件或模块的运行不会有任何交叉，它们总是先运行完一个，再运行下一个。</p>
+<p>Toa 只有一个极简的内核，提供快捷的 HTTP 操作和异步流程控制能力。具体的业务功能逻辑则由中间件和模块组合实现。用户则可根据自己的业务需求，以最轻量级的方式组合自己的应用。</p>
 <p>让我们来看看 Toa 极其简单的 Hello World 应用程序：</p>
-<pre><code class="language-js"><span class="hljs-keyword">var</span> Toa = <span class="hljs-built_in">require</span>(<span class="hljs-string">'toa'</span>)
-<span class="hljs-keyword">var</span> app = Toa(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+<pre><code class="language-js"><span class="hljs-keyword">const</span> Toa = <span class="hljs-built_in">require</span>(<span class="hljs-string">'toa'</span>)
+<span class="hljs-keyword">const</span> app = <span class="hljs-keyword">new</span> Toa()
+app.use(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
   <span class="hljs-keyword">this</span>.body = <span class="hljs-string">'Hello World!\n-- toa'</span>
 })
 
 app.listen(<span class="hljs-number">3000</span>)
 </code></pre>
-<h3>Class: Toa([server][, mainFn][, options])</h3>
+<h3>Class: Toa()</h3>
+<h3>Class: Toa(server)</h3>
+<h3>Class: Toa(options)</h3>
+<h3>Class: Toa(server, options)</h3>
 <ul>
-<li><p><code>server</code>: {Object}, http server 或 https server 实例。</p></li>
-<li><p><code>mainFn</code>: {Function} <code>mainFn</code> 中如果有异步逻辑，则应该封装成 <code>thunk</code> 处理器能处理的对象（thunkable value），如 <code>generator</code> 函数、<code>generator</code> 对象、thunk 函数或<code>promise</code> 对象等，并 <code>return</code> 返回（与 <code>thunks</code> 或 <code>Promise</code> 类似）。</p></li>
-<li><p><code>options</code>: {Object} 类似 <code>thunks</code> 的 options，对于 server 的每一个 <strong>client request</strong>，toa app 均会用 <code>thunks</code> 生成一个的 <code>thunk</code>，挂载到 <code>context.thunk</code>，该 <code>thunk</code> 的作用域对该 <strong>client request</strong> 的整个生命周期生效。故 <code>options</code> 的 <code>debug</code>、<code>onstop</code>、<code>onerror</code> 也对应于该 <strong>client request</strong>。</p>
+<li><code>server</code>: {Object}, http server 或 https server 实例。</li>
+<li><code>options</code>: {Object} 类似 <code>thunks</code> 的 options，对于 server 的每一个 <strong>client request</strong>，toa app 均会用 <code>thunks</code> 生成一个的 <code>thunk</code>，挂载到 <code>context.thunk</code>，该 <code>thunk</code> 的作用域对该 <strong>client request</strong> 的整个生命周期生效。
 <ul>
-<li><code>options.debug</code>: {Function} 其 <code>this</code> 为 <code>null</code>。可捕获 <strong>client request</strong> 异步处理流程每一步结果，用于调试。</li>
-<li><code>options.onstop</code>: {Function} 其 <code>this</code> 为 <strong>client request</strong> 的 <code>context</code> 对象。当调用 <code>context.end()</code> 时，会立即终止 <strong>client request</strong> 处理流程，<code>onstop</code> 会运行，然后 <code>respond</code> 客户端，<code>onstop</code> 可返回异步值。</li>
 <li><code>options.onerror</code>: {Function} 其 <code>this</code> 为 <strong>client request</strong> 的 <code>context</code> 对象。当 <strong>client request</strong> 处理流程出现异常时，会抛出到 <code>onerror</code>，原有处理流程会终止，<code>onerror</code> 运行完毕后再进入 toa 内置的异常处理流程，最后 <code>respond</code> 客户端。如果 <code>onerror</code> 返回 <code>true</code>，则会忽略该异常，异常不会进入内置异常处理流程，然后直接 <code>respond</code> 客户端。</li>
 </ul></li>
 </ul>
 <pre><code class="language-js"><span class="hljs-comment">// with full arguments</span>
-<span class="hljs-keyword">var</span> app = <span class="hljs-keyword">new</span> Toa(server, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
-  <span class="hljs-comment">// body...</span>
-}, {
-  debug: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{},
-  onstop: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">sig</span>) </span>{},
-  onerror: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">error</span>) </span>{}
+<span class="hljs-keyword">const</span> app = <span class="hljs-keyword">new</span> Toa(server, {
+  <span class="hljs-attr">onerror</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">error</span>) </span>{}
 })
 </code></pre>
 <h4>app.keys = ['key1’, ‘key2’]</h4>
 <p>设置 cookie 签名密钥，参考 <a href="https://github.com/expressjs/keygrip">Keygrip</a>。<br>
 注意，签名密钥只在配置项 <code>signed</code> 参数为真时才会生效：</p>
-<pre><code class="language-js"><span class="hljs-keyword">this</span>.cookies.set(<span class="hljs-string">'name'</span>, <span class="hljs-string">'test'</span>, {signed: <span class="hljs-literal">true</span>})
+<pre><code class="language-js"><span class="hljs-keyword">this</span>.cookies.set(<span class="hljs-string">'name'</span>, <span class="hljs-string">'test'</span>, {<span class="hljs-attr">signed</span>: <span class="hljs-literal">true</span>})
 </code></pre>
 <h4>app.config = config</h4>
 <p>config 会被 <code>context.config</code> 继承，但 <code>context.config</code> 不会修改 <code>app.config</code>。</p>
@@ -64,10 +58,10 @@ app.listen(<span class="hljs-number">3000</span>)
 </code></pre>
 <p>app.config 默认值：</p>
 <pre><code class="language-js">{
-  proxy: <span class="hljs-literal">false</span>, <span class="hljs-comment">// 决定了哪些 `proxy header` 参数会被加到信任列表中</span>
+  <span class="hljs-attr">proxy</span>: <span class="hljs-literal">false</span>, <span class="hljs-comment">// 决定了哪些 `proxy header` 参数会被加到信任列表中</span>
   env: process.env.NODE_ENV || <span class="hljs-string">'development'</span>, <span class="hljs-comment">// node 执行环境</span>
   subdomainOffset: <span class="hljs-number">2</span>,
-  poweredBy: <span class="hljs-string">'Toa'</span>
+  <span class="hljs-attr">poweredBy</span>: <span class="hljs-string">'Toa'</span>
 }
 </code></pre>
 <h4>app.use(function () {})</h4>
@@ -96,24 +90,24 @@ app.onerror = <span class="hljs-function"><span class="hljs-keyword">function</s
   <span class="hljs-keyword">if</span> (!util.isError(err)) err = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'non-error thrown: '</span> + err)
 
   <span class="hljs-comment">// catch system error</span>
-  <span class="hljs-keyword">var</span> msg = err.stack || err.toString()
+  <span class="hljs-keyword">let</span> msg = err.stack || err.toString()
   <span class="hljs-built_in">console</span>.error(msg.replace(<span class="hljs-regexp">/^/gm</span>, <span class="hljs-string">'  '</span>))
 }
 </code></pre>
 <h4>app.toListener()</h4>
 <p>返回 app request listener。</p>
-<pre><code class="language-js"><span class="hljs-keyword">var</span> http = <span class="hljs-built_in">require</span>(<span class="hljs-string">'http'</span>)
-<span class="hljs-keyword">var</span> toa = <span class="hljs-built_in">require</span>(<span class="hljs-string">'toa'</span>)
+<pre><code class="language-js"><span class="hljs-keyword">const</span> http = <span class="hljs-built_in">require</span>(<span class="hljs-string">'http'</span>)
+<span class="hljs-keyword">const</span> toa = <span class="hljs-built_in">require</span>(<span class="hljs-string">'toa'</span>)
 
-<span class="hljs-keyword">var</span> app = toa()
+<span class="hljs-keyword">const</span> app = toa()
 
-<span class="hljs-keyword">var</span> server = http.createServer(app.toListener())
+<span class="hljs-keyword">const</span> server = http.createServer(app.toListener())
 server.listen(<span class="hljs-number">3000</span>)
 </code></pre>
 <p>等效于：</p>
-<pre><code class="language-js"><span class="hljs-keyword">var</span> toa = <span class="hljs-built_in">require</span>(<span class="hljs-string">'toa'</span>)
+<pre><code class="language-js"><span class="hljs-keyword">const</span> toa = <span class="hljs-built_in">require</span>(<span class="hljs-string">'toa'</span>)
 
-<span class="hljs-keyword">var</span> app = toa()
+<span class="hljs-keyword">const</span> app = toa()
 app.listen(<span class="hljs-number">3000</span>)
 </code></pre>
 <h4>app.listen(port, [hostname], [backlog], [callback])</h4>
@@ -131,17 +125,18 @@ app.listen(<span class="hljs-number">3000</span>)
 <h3>Difference from Koa:</h3>
 <ul>
 <li>remove <code>ctx.app</code></li>
-<li>add <code>ctx.catchStream</code> method, used to catch stream’s error or clean stream when some error.</li>
-<li>add <code>ctx.thunk</code> method, it is thunk function that bound a scope with <code>debug</code>, <code>onstop</code>, <code>onerror</code>.</li>
+<li>add <code>ctx.thunk</code> method, it is thunk function that bound a scope with <code>onerror</code>.</li>
 <li>add <code>ctx.end</code> method, use to stopping request process and respond immediately.</li>
-<li>add <code>ctx.ended</code>, indicates that the response ended.</li>
-<li>add <code>ctx.finished</code>, indicates that the response finished successfully.</li>
-<li>add <code>ctx.closed</code>, indicates that the response closed unexpectedly.</li>
+<li>add <code>ctx.after</code> method, use to add hooks that run after middlewares and before respond.</li>
+<li>add <code>ctx.catchStream</code> method, used to catch stream’s error or clean stream when some error.</li>
+<li>add <code>ctx.ended</code> property, indicates that the response ended.</li>
+<li>add <code>ctx.finished</code> property, indicates that the response finished successfully.</li>
+<li>add <code>ctx.closed</code> property, indicates that the response closed unexpectedly.</li>
 <li>context is a <code>EventEmitter</code> instance</li>
 </ul>
 <p><code>Context</code> object encapsulates node’s <code>request</code> and <code>response</code> objects into a single object which provides many helpful methods for writing web applications and APIs. These operations are used so frequently in HTTP server development that they are added at this level instead of a higher level framework, which would force middleware to re-implement this common functionality.</p>
 <p>A <code>Context</code> is created <em>per</em> request, and is referenced in middleware as the receiver, or the <code>this</code> identifier, as shown in the following snippet:</p>
-<pre><code class="language-js"><span class="hljs-keyword">var</span> app = Toa(<span class="hljs-function"><span class="hljs-keyword">function</span> * (<span class="hljs-params"></span>) </span>{
+<pre><code class="language-js"><span class="hljs-keyword">const</span> app = Toa(<span class="hljs-function"><span class="hljs-keyword">function</span> * (<span class="hljs-params"></span>) </span>{
   <span class="hljs-keyword">this</span> <span class="hljs-comment">// is the Context</span>
   <span class="hljs-keyword">this</span>.request <span class="hljs-comment">// is a toa Request</span>
   <span class="hljs-keyword">this</span>.response <span class="hljs-comment">// is a toa Response</span>
@@ -166,7 +161,7 @@ app.use(<span class="hljs-function"><span class="hljs-keyword">function</span> *
 <h3>API</h3>
 <p><code>Context</code> specific methods and accessors.</p>
 <h4>ctx.thunk([thunkable])</h4>
-<p>A thunk function that bound a scope with <code>debug</code>, <code>onstop</code>, <code>onerror</code>.</p>
+<p>A thunk function that bound a scope.</p>
 <ul>
 <li><code>thunkable</code> thunkable value, see: <a href="https://github.com/thunks/thunks">https://github.com/thunks/thunks</a></li>
 </ul>
@@ -175,6 +170,11 @@ app.use(<span class="hljs-function"><span class="hljs-keyword">function</span> *
 <ul>
 <li><code>message</code> String, see: <a href="https://github.com/thunks/thunks">https://github.com/thunks/thunks</a></li>
 </ul>
+<h4>ctx.after(function () {})</h4>
+<h4>ctx.after(function (callback) {})</h4>
+<h4>ctx.after(function * () {})</h4>
+<h4>ctx.after(async function () {})</h4>
+<p>Add hooks dynamicly. Hooks will run after middlewares and mainFn, but before <code>respond</code>.</p>
 <h4>ctx.req</h4>
 <p>Node’s <code>request</code> object.</p>
 <h4>ctx.res</h4>
@@ -219,14 +219,14 @@ app.use(<span class="hljs-function"><span class="hljs-keyword">function</span> *
 <span class="hljs-keyword">this</span>.throw(<span class="hljs-string">'something exploded'</span>)
 </code></pre>
 <p>For example <code>this.throw('name required', 400)</code> is equivalent to:</p>
-<pre><code class="language-js"><span class="hljs-keyword">var</span> err = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'name required'</span>)
+<pre><code class="language-js"><span class="hljs-keyword">let</span> err = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'name required'</span>)
 err.status = <span class="hljs-number">400</span>
 <span class="hljs-keyword">throw</span> err
 </code></pre>
 <p>Note that these are user-level errors and are flagged with <code>err.expose</code> meaning the messages are appropriate for client responses, which is typically not the case for error messages since you do not want to leak failure details.</p>
 <p>You may optionally pass a <code>properties</code> object which is merged into the error as-is, useful for decorating machine-friendly errors which are reported to the requester upstream.</p>
-<pre><code class="language-js"><span class="hljs-keyword">this</span>.throw(<span class="hljs-number">401</span>, <span class="hljs-string">'access_denied'</span>, {user: user})
-<span class="hljs-keyword">this</span>.throw(<span class="hljs-string">'access_denied'</span>, {user: user})
+<pre><code class="language-js"><span class="hljs-keyword">this</span>.throw(<span class="hljs-number">401</span>, <span class="hljs-string">'access_denied'</span>, {<span class="hljs-attr">user</span>: user})
+<span class="hljs-keyword">this</span>.throw(<span class="hljs-string">'access_denied'</span>, {<span class="hljs-attr">user</span>: user})
 </code></pre>
 <p>Toa uses <a href="https://github.com/jshttp/http-errors">http-errors</a> to create errors.</p>
 <h4>ctx.createError([status], [msg], [properties])</h4>
@@ -349,7 +349,7 @@ err.status = <span class="hljs-number">400</span>
 <p>Get hostname when present. Supports <code>X-Forwarded-Host</code> when <code>app.proxy</code> is <strong>true</strong>, otherwise <code>Host</code> is used.</p>
 <h4>request.type</h4>
 <p>Get request <code>Content-Type</code> void of parameters such as &quot;charset&quot;.</p>
-<pre><code class="language-js"><span class="hljs-keyword">var</span> ct = <span class="hljs-keyword">this</span>.request.type
+<pre><code class="language-js"><span class="hljs-keyword">let</span> ct = <span class="hljs-keyword">this</span>.request.type
 <span class="hljs-comment">// =&gt; "image/png"</span>
 </code></pre>
 <h4>request.charset</h4>
@@ -361,13 +361,13 @@ err.status = <span class="hljs-number">400</span>
 <p>Get parsed query-string, returning an empty object when no query-string is present. Note that this getter does <em>not</em> support nested parsing.</p>
 <p>For example &quot;color=blue&amp;size=small&quot;:</p>
 <pre><code class="language-js">{
-  color: <span class="hljs-string">'blue'</span>,
-  size: <span class="hljs-string">'small'</span>
+  <span class="hljs-attr">color</span>: <span class="hljs-string">'blue'</span>,
+  <span class="hljs-attr">size</span>: <span class="hljs-string">'small'</span>
 }
 </code></pre>
 <h4>request.query=</h4>
 <p>Set query-string to the given object. Note that this setter does <em>not</em> support nested objects.</p>
-<pre><code class="language-js"><span class="hljs-keyword">this</span>.query = {next: <span class="hljs-string">'/login'</span>}
+<pre><code class="language-js"><span class="hljs-keyword">this</span>.query = {<span class="hljs-attr">next</span>: <span class="hljs-string">'/login'</span>}
 </code></pre>
 <h4>request.fresh</h4>
 <p>Check if a request cache is &quot;fresh&quot;, aka the contents have not changed. This method is for cache negotiation between <code>If-None-Match</code> / <code>ETag</code>, and <code>If-Modified-Since</code> and <code>Last-Modified</code>. It should be referenced after setting one or more of these response headers.</p>
@@ -629,7 +629,7 @@ so you can make a correction.</p>
 <p>The Content-Type is defaulted to application/json.</p>
 <h4>response.get(field)</h4>
 <p>Get a response header field value with case-insensitive <code>field</code>.</p>
-<pre><code class="language-js"><span class="hljs-keyword">var</span> etag = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'etag'</span>)
+<pre><code class="language-js"><span class="hljs-keyword">let</span> etag = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'etag'</span>)
 </code></pre>
 <h4>response.set(field, value)</h4>
 <p>Set response header <code>field</code> to <code>value</code>:</p>
@@ -650,7 +650,7 @@ so you can make a correction.</p>
 <p>Remove header <code>field</code>.</p>
 <h4>response.type</h4>
 <p>Get response <code>Content-Type</code> void of parameters such as &quot;charset&quot;.</p>
-<pre><code class="language-js"><span class="hljs-keyword">var</span> ct = <span class="hljs-keyword">this</span>.type
+<pre><code class="language-js"><span class="hljs-keyword">let</span> ct = <span class="hljs-keyword">this</span>.type
 <span class="hljs-comment">// =&gt; "image/png"</span>
 </code></pre>
 <h4>response.type=</h4>

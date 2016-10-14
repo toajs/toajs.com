@@ -151,14 +151,6 @@ gulp.task('rjs-app', function () {
 })
 
 gulp.task('rev', function () {
-  var revall = new Revall({
-    prefix: config.cdnPrefix,
-    dontGlobal: [/\/favicon\.ico$/],
-    dontRenameFile: [/\.html$/],
-    dontUpdateReference: [/\.html$/],
-    dontSearchFile: [/\.js$/]
-  })
-
   return merge2(
     gulp.src('public/views/**/*.html'),
     gulp.src('public/static/css/*.css').pipe(minifyCSS({rebase: false})),
@@ -171,7 +163,13 @@ gulp.task('rev', function () {
       'public/static/fonts/**'
     ])
   )
-    .pipe(revall.revision())
+    .pipe(Revall.revision({
+      prefix: config.cdnPrefix,
+      dontGlobal: [/\/favicon\.ico$/],
+      dontRenameFile: [/\.html$/],
+      dontUpdateReference: [/\.html$/],
+      dontSearchFile: [/\.js$/]
+    }))
     .pipe(gulp.dest('public/dist'))
 })
 
