@@ -1,4 +1,163 @@
-<h1>Toa</h1>
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Toa | A pithy and powerful web framework</title>
+    <meta charset="utf-8">
+    <meta name="keywords" content="toa, web, app, http, application, framework, thunk, thunks">
+    <meta name="description" content="A pithy and powerful web framework.">
+    <meta name="viewport" content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="HandheldFriendly" content="true">
+    <link rel="stylesheet" href="static/css/lib.fff14453.css"/>
+    <link rel="stylesheet" href="static/css/app.47bfeea6.css"/>
+  </head>
+  <body>
+    <div class="page-index">
+  <section class="heading" id="heading">
+  <div class="logo">TOA</div>
+  <p class="desc">A pithy and powerful web framework</p>
+  <a href="https://github.com/toajs/toa" target="_blank" class="btn btn-lg btn-info main-handler">
+    Get TOA
+  </a>
+</section>
+
+  <section class="navbar navbar-default site-header">
+  <div class="container">
+    <div class="navbar-header">
+      <div class="clearfix">
+        <ul class="nav navbar-nav">
+          <li class="nav-handler">
+            <a href="#introduction" title="">Introduction</a>
+          </li>
+          <li class="nav-handler">
+            <a href="#get-started" title="">Get started</a>
+          </li>
+          <li class="nav-handler dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown">Documentation <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="#doc-application">Application</a></li>
+              <li><a href="#doc-context">Context</a></li>
+              <li><a href="#doc-request">Resuest</a></li>
+              <li><a href="#doc-response">Response</a></li>
+            </ul>
+          </li>
+          <li class="nav-handler">
+            <a href="#resources" title="">Resources</a>
+          </li>
+          <li class="nav-handler">
+            <a href="#thanks" title="">Thanks</a>
+          </li>
+        </ul>
+        <ul class="nav navbar-nav more-handlers pull-right">
+          <li class="nav-handler with-icon dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown">
+            <i class="mdi-navigation-more-vert"></i>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="cant-click">Follow author</a></li>
+            <li class="divider"></li>
+            <li><a href="https://github.com/zensh" target="_blank">On Github</a></li>
+            <li><a href="http://weibo.com/zensh" target="_blank">On Weibo</a></li>
+          </ul>
+        </li>
+      </div>
+    </div>
+    <div class="github-star-handler" title="Star on Github">
+      <a href="https://github.com/toajs/toa" target="_blank" class="btn btn-fab btn-info">
+        <i class="mdi-action-grade"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+  <section class="introduction" id="introduction">
+  <div class="container">
+    <div class="card">
+      <div class="card-main">
+        <div class="row features">
+          <div class="col-sm-4">
+            <div class="sub-card">
+              <div class="sub-card-header">
+                <div class="intro-icon icon-quick-start"></div>
+              </div>
+              <h3>快速上手</h3>
+              <p><strong>Toa</strong> 与 <strong>Koa</strong> 学习成本和编程体验是一致的，两者之间几乎是无缝切换</p>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="sub-card">
+              <div class="sub-card-header">
+                <div class="intro-icon icon-thunks"></div>
+              </div>
+                <h3>基于 Thunks</h3>
+                <p>由 Thunks 组合业务逻辑，用同步逻辑编写非阻塞的异步程序和异常处理</p>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="sub-card">
+              <div class="sub-card-header">
+                <div class="intro-icon icon-modularize"></div>
+              </div>
+                <h3>模块化</h3>
+                <p>弱化中间件，强化模块化组件，使得编写大型应用的结构逻辑更清晰，也更安全</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <svg id="get-started-gap" xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100" viewBox="0 0 100 100" preserveAspectRatio="none">
+  <path d="M0 100 C 20 0 50 0 100 100 Z"></path>
+</svg>
+<section class="get-started" id="get-started">
+  <div class="container">
+    <div class="card">
+      <div class="card-header with-border">
+        <h2>Get started</h2>
+      </div>
+      <div class="card-main">
+          <h3>"Hello world" snippet</h3>
+<pre><code class="language-js"><span class="hljs-keyword">const</span> Toa = <span class="hljs-built_in">require</span>(<span class="hljs-string">'toa'</span>)
+<span class="hljs-keyword">const</span> app = <span class="hljs-number">new</span> Toa()
+app.use(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params"> ()</span> </span>{
+  <span class="hljs-keyword">this</span>.body = <span class="hljs-string">'Hello World!\n-- toa'</span>
+})
+app.listen(<span class="hljs-number">3100</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params"> ()</span> </span>{
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'\n'</span>, <span class="hljs-string">'listening on port'</span>, <span class="hljs-number">3100</span>, <span class="hljs-string">'in dev env'</span>)
+})
+</code></pre>
+        <h3>Install Toa & startup Toa</h3>
+        <div class="app-frame terminal-window">
+          <header>
+            <div class="button red"></div><div class="button yellow"></div><div class="button green"></div>
+            <span class="title">Terminal</span>
+          </header>
+          <section class="frame-main terminal-main">
+            <div class="history"></div>
+            $&nbsp;<span class="prompt"></span>
+            <span class="typed-cursor"></span>
+          </section>
+        </div>
+        <div class="app-frame-data terminal-data run-output">
+          <br>&nbsp;
+          <span>&nbsp;&nbsp;listening on port <span class="orange">3100</span> in <span class="green">dev env</span></span>
+          <br>&nbsp;
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <section class="documentation" id="documentation">
+  <div class="card">
+    <div class="card-header with-border">
+      <h2>Documentation</h2>
+    </div>
+    <div class="card-main">
+      <div class="readable">
+        <h1>Toa</h1>
 <p>简洁而强大的 web 框架。</p>
 <h2>Thanks to <a href="https://github.com/koajs/koa">Koa</a> and it’s authors</h2>
 <h2 id="doc-summary">Summary</h2>
@@ -687,3 +846,172 @@ so you can make a correction.</p>
 <h4>response.vary(field)</h4>
 <p>Vary on <code>field</code>.</p>
 <hr>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+  <section class="resources" id="resources">
+  <div class="container">
+    <div class="card">
+      <div class="card-header with-border">
+        <h2>Resources</h2>
+      </div>
+      <div class="card-main">
+        <p class="module-desc">与 Koa 一样， Toa 也没有绑定过多的功能，而仅仅提供了一个轻量优雅的函数库，和强大的扩展能力。<br>
+        使用者可以根据自己的需求选择独立的功能模块或中间件，或自己实现相关功能模块。<br>
+        以下是 <strong>Toajs</strong> 提供的基础性的功能模块。它们已能满足大多数的应用需求。</p>
+        <div class="row modules-list">
+          <div class="col-xs-6">
+            <a href="https://github.com/toajs/toa-ejs" target="_blank" class="module">
+              <div class="module-icon icon-ejs">Ejs</div>
+              Ejs render module for toa.
+            </a>
+          </div>
+          <div class="col-xs-6">
+            <a href="https://github.com/toajs/toa-mejs" target="_blank" class="module">
+              <div class="module-icon icon-mejs">Mejs</div>
+              Mejs render module for toa.
+            </a>
+          </div>
+          <div class="col-xs-6">
+            <a href="https://github.com/toajs/toa-i18n" target="_blank" class="module">
+              <div class="module-icon icon-i18n">I18n</div>
+              I18n middleware for toa.
+            </a>
+          </div>
+          <div class="col-xs-6">
+            <a href="https://github.com/toajs/toa-body" target="_blank" class="module">
+              <div class="module-icon icon-body">Body</div>
+              Request body parser for toa.
+            </a>
+          </div>
+          <div class="col-xs-6">
+            <a href="https://github.com/toajs/toa-token" target="_blank" class="module">
+              <div class="module-icon icon-token">Token</div>
+              Token based authentication for toa.
+            </a>
+          </div>
+          <div class="col-xs-6">
+            <a href="https://github.com/toajs/toa-router" target="_blank" class="module">
+              <div class="module-icon icon-router">Router</div>
+              A router for toa.
+            </a>
+          </div>
+          <div class="col-xs-6">
+            <a href="https://github.com/toajs/toa-static" target="_blank" class="module">
+              <div class="module-icon icon-static">Static</div>
+              A static server module for toa.
+            </a>
+          </div>
+          <div class="col-xs-6">
+            <a href="https://github.com/toajs/toa-favicon" target="_blank" class="module">
+              <div class="module-icon icon-favicon">Favi..</div>
+              Favicon middleware for toa.
+            </a>
+          </div>
+          <div class="col-xs-6">
+            <a href="https://github.com/toajs/toa-session" target="_blank" class="module">
+              <div class="module-icon icon-session">Sess..</div>
+              Session middleware for toa.
+            </a>
+          </div>
+          <div class="col-xs-6">
+            <a href="https://github.com/toajs/toa-compress" target="_blank" class="module">
+              <div class="module-icon icon-compress">Comp..</div>
+              Compress responses middleware for toa.
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <svg id="thanks-gap" xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100" viewBox="0 0 100 100" preserveAspectRatio="none">
+  <path d="M-5 100 Q 0 20 5 100 Z
+    M0 100 Q 5 0 10 100
+    M5 100 Q 10 30 15 100
+    M10 100 Q 15 10 20 100
+    M15 100 Q 20 30 25 100
+    M20 100 Q 25 -10 30 100
+    M25 100 Q 30 10 35 100
+    M30 100 Q 35 30 40 100
+    M35 100 Q 40 10 45 100
+    M40 100 Q 45 50 50 100
+    M45 100 Q 50 20 55 100
+    M50 100 Q 55 40 60 100
+    M55 100 Q 60 60 65 100
+    M60 100 Q 65 50 70 100
+    M65 100 Q 70 20 75 100
+    M70 100 Q 75 45 80 100
+    M75 100 Q 80 30 85 100
+    M80 100 Q 85 20 90 100
+    M85 100 Q 90 50 95 100
+    M90 100 Q 95 25 100 100
+    M95 100 Q 100 15 105 100 Z">
+  </path>
+</svg>
+
+<section class="thanks" id="thanks">
+  <div class="container">
+    <h2 class="title">Thanks to Koa and it’s authors</h2>
+    <div class="row">
+      <div class="koa-wrap col-sm-3">
+        <a href="http://koajs.com" target="_blank">
+          <span class="koa-logo">
+            koa
+          </span>
+        </a>
+        <hr>
+      </div>
+      <div class="col-sm-9">
+        <ul class="row authors-list">
+          <li class="col-sm-3">
+            <a href="https://github.com/tj" target="_blank">
+              <img src="/static/images/thanks/author-tj.1398cf7c.jpg">
+              <br>
+              TJ Holowaychuk
+            </a>
+          </li>
+          <li class="col-sm-3">
+            <a href="https://github.com/jonathanong" target="_blank">
+              <img src="/static/images/thanks/author-jo.b502dfe8.jpg">
+              <br>
+              Jonathan Ong
+            </a>
+          <li class="col-sm-3">
+            <a href="https://github.com/juliangruber" target="_blank">
+              <img src="/static/images/thanks/author-jg.fce36d7f.jpg">
+              <br>
+              Julian Gruber
+            </a>
+          </li>
+          <li class="col-sm-3">
+            <a href="https://github.com/dead-horse" target="_blank">
+              <img src="/static/images/thanks/author-yyh.c0ef5e8a.jpg">
+              <br>
+              Yiyu He
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <section class="copyright">
+  <div class="container">
+    <p>Copyright © 2015-2017 Toajs Released under the MIT license.</p>
+  </div>
+</section>
+
+</div>
+
+    
+    <script src="static/js/lib.20bffa5c.js"></script>
+    <script src="static/js/app.456c01e8.js"></script>
+    
+  </body>
+</html>
